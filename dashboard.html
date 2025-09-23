@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Procurement Planning System</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      color: #333;
+    }
+
+    header {
+      background-color: #a00000;
+      color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo img {
+      height: 40px;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    .main-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      padding: 30px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      text-align: center;
+      transition: transform 0.2s ease-in-out;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .logout {
+      background: white;
+      color: #a00000;
+      padding: 6px 12px;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+
+    .logout:hover {
+      background: #fff3f3;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">
+      <img src="Images/tup_logo.png" alt="TUP Logo">
+      <h2>Procurement Dashboard</h2>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="#">Procurement</a></li>
+        <li><a href="#">Reports</a></li>
+        <li><a href="#">Settings</a></li>
+      </ul>
+    </nav>
+    <a href="login.html" class="logout">Logout</a>
+  </header>
+
+  <section class="main-content">
+    <div class="card">
+      <h3>Procurement Requests</h3>
+      <p>View and manage procurement requests</p>
+    </div>
+
+    <div class="card">
+      <h3>Reports</h3>
+      <p>Generate and download reports easily</p>
+    </div>
+
+    <div class="card">
+      <h3>Settings</h3>
+      <p>Manage user accounts and system preferences</p>
+    </div>
+  </section>
+
+</body>
+</html>
