@@ -1,3 +1,5 @@
 # Logs
 *.log
 /logs/
+.DS_Store
+
