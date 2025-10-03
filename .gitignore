@@ -1,15 +1,3 @@
-# Environment
-.env
-
-# Dependencies
-/vendor/
-/vendors/
-/node_modules/
-
 # Logs
 *.log
 /logs/
-
-# System files
-.DS_Store
-Thumbs.db
