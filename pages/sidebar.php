@@ -53,6 +53,7 @@
   } elseif ($canCreatePPMP) {
       $accessTypeName = "College Dean";
   }
+  
 
   require_once 'header.php';
 ?>
@@ -85,32 +86,71 @@
         <!-- User Management -->
         <h3 class="menu-title d-none" style="margin-left: -8px;">User Management</h3>
         <ul class="nav side-menu">
+
           <li class="<?= ($current_page == 'index.php') ? 'active' : '' ?>">
             <a href="index.php" class="text-dark"><i class="fa fa-tachometer"></i> DASHBOARD</a>
           </li>
-          <?php //if ($canCreatePPMP): ?>
+
+          <?php if ($canApprovePPMP && $canViewReports): ?>
+            <li class="<?= ($current_page == 'users.php') ? 'active' : '' ?>">
+              <a href="users.php" class="text-dark"><i class="fa fa-users"></i> USERS</a>
+            </li>
+
+            <li class="<?= ($current_page == 'offices.php') ? 'active' : '' ?>">
+              <a href="offices.php" class="text-dark"><i class="fa fa-building"></i> OFFICE</a>
+            </li>
+
+
+            <li class="<?= ($current_page == 'categories.php') ? 'active' : '' ?>">
+              <a href="categories.php" class="text-dark"><i class="fa fa-tags"></i> CATEGORIES</a>
+            </li>
+
+            <li class="<?= ($current_page == 'fiscal_years.php') ? 'active' : '' ?>">
+              <a href="fiscal_years.php" class="text-dark"><i class="fa fa-calendar"></i> FISCAL YEARS</a>
+            </li>
+
             <li class="<?= ($current_page == 'admin.php') ? 'active' : '' ?>">
               <a href="#" class="text-dark"><i class="fa fa-file"></i> REVIEW SUBMISSIONS</a>
             </li>
-          <?php //endif; ?>
 
-          <?php //if ($canApprovePPMP): ?>
             <li class="<?= ($current_page == 'approvals.php') ? 'active' : '' ?>">
               <a href="#" class="text-dark"><i class="fa fa-check"></i> CONSOLIDATE PPMP</a>
             </li>
-          <?php //endif; ?>
 
-          <?php //if($canManageBudget): ?>
             <li class="<?= ($current_page == 'reports.php') ? 'active' : '' ?>">
               <a href="#" class="text-dark"><i class="fa fa-file"></i> REVISE APP</a>
             </li>
-          <?php //endif; ?>
+          <?php endif; ?>
 
-          <?php //if ($canViewReports): ?>
-            <li class="<?= ($current_page == 'reports.php') ? 'active' : '' ?>">
-              <a href="#" class="text-dark"><i class="fa fa-file"></i> REPORTS</a>
+          
+
+          <?php if ($canCreatePPMP): ?>
+            <li class="<?= ($current_page == 'ppmp.php') ? 'active' : '' ?>">
+              <a href="ppmp.php" class="text-dark"><i class="fa fa-folder"></i> MY PPMP</a>
             </li>
-          <?php //endif; ?>
+            <li class="d-none <?= ($current_page == 'create_ppmp.php') ? 'active' : '' ?>">
+              <a href="create_ppmp.php" class="text-dark"><i class="fa fa-plus"></i> CREATE PPMP</a>
+            </li>
+            <li class="<?= ($current_page == 'notifications.php') ? 'active' : '' ?>">
+              <a href="notifications.php" class="text-dark"><i class="fa fa-bell"></i> NOTIFICATIONS</a>
+            </li>
+          <?php endif; ?>
+
+          <?php if ($canManageBudget): ?>
+            <li class="<?= ($current_page == 'budget_allocations.php') ? 'active' : '' ?>">
+              <a href="budget_allocations.php" class="text-dark"><i class="fa fa-calculator"></i> BUDGET ALLOCATIONS</a>
+            </li>
+            <li class="<?= ($current_page == 'adjustment_logs.php') ? 'active' : '' ?>">
+              <a href="adjustment_logs.php" class="text-dark"><i class="fa fa-history"></i> ADJUSTMENT LOGS</a>
+            </li>
+          <?php endif; ?>
+          
+          <?php if (!$canCreatePPMP): ?>
+            <li class="<?= ($current_page == 'reports.php') ? 'active' : '' ?>">
+              <a href="reports.php" class="text-dark"><i class="fa fa-file"></i> REPORTS</a>
+            </li>
+          <?php endif; ?>
+           
         </ul>
       </div>
       </ul>
@@ -132,7 +172,7 @@
         <li class="nav-item dropdown open">
           <a href="javascript:;" class="user-profile dropdown-toggle" aria-haspopup="true" id="navbarDropdown" data-toggle="dropdown" aria-expanded="false">
             <img src="../assets/img/user-profiles/<?= !empty($user['profile']) ? $user['profile'] : 'avatar.png' ?>" alt=""> 
-            <span class="text-light">Welcome, <?= $fullName ?>!</span>   
+            <span class="text-light">Welcome, <?= $user['first_name'] ?>!</span>   
           </a>
           <div class="dropdown-menu dropdown-usermenu pull-right mt-4" aria-labelledby="navbarDropdown">
             <a class="dropdown-item" href="profile.php"><i class="fa fa-user"></i> Profile</a>
