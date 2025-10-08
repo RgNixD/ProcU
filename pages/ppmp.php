@@ -1,0 +1,429 @@
+<?php 
+  require_once 'sidebar.php'; 
+?>
+
+<!-- page content -->
+<div class="right_col" role="main">
+  <div class="">
+    <div class="page-title">
+      <div class="title_left">
+        <h3>PPMP</h3>
+      </div>
+    </div>
+
+    <div class="clearfix"></div>
+
+    <div class="x_panel">
+      <div class="x_title">
+        <h2>PPMP List</h2>
+        <div class="clearfix"></div>
+      </div>
+      <div class="x_content">
+
+        <!-- ADD MODAL -->
+        <div class="modal fade" id="AddNew" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-lg">
+            <form id="SaveForm" autocomplete="off" enctype="multipart/form-data">
+              <div class="modal-content">
+                <div class="modal-header bg-light">
+                  <h5 class="modal-title" id="exampleModalLabel">New PPMP</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><i class="fa fa-times-circle"></i></span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                      <!-- Category -->
+                      <div class="col-md-6 mb-3">
+                        <div class="form-group">
+                          <label for="category" class="form-label fw-bold">Category</label>
+                          <select class="form-control form-select" id="category" required>
+                            <option value="" disabled selected>Select Category</option>
+                            <?php
+                              $categories = $db->getAllCategories();
+                              while ($row = $categories->fetch_assoc()) {
+                                echo '<option value="' . htmlspecialchars($row['category_id']) . '">' . htmlspecialchars($row['category_name']) . '</option>';
+                              }
+                            ?>
+                          </select>
+                        </div>
+                        <div class="form-group">
+                          <label for="item" class="form-label fw-bold">Item:</label>
+                          <input type="text" class="form-control" id="item" placeholder="Enter item" required>
+                        </div>
+                        <div class="form-group">
+                          <label for="specification" class="form-label fw-bold">Specification:</label>
+                          <input type="text" class="form-control" id="specification" placeholder="Enter specification" required>
+                        </div>
+                        <div class="form-group">
+                          <label for="cost" class="form-label fw-bold">Cost:</label>
+                          <input type="number" class="form-control" id="cost" placeholder="Enter price" required>
+                        </div>
+                        
+                      </div>
+                      <!-- Justification -->
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label for="quantity" class="form-label fw-bold">Quantity:</label>
+                          <input type="number" class="form-control" id="quantity" value="1" min="1" required>
+                        </div>
+                        <div class="form-group">
+                          <label for="justification" class="form-label fw-bold">Justification:</label>
+                          <textarea class="form-control" id="justification" rows="5" placeholder="Enter justification" required></textarea>
+                        </div>
+                       <div class="form-group mt-3 d-flex justify-content-end gap-2">
+                          <button type="button" class="btn btn-danger btn-sm me-2" id="clearBtn">
+                            <i class="fa fa-times me-1"></i> Clear
+                          </button>
+                          <button type="button" class="btn btn-primary btn-sm" id="addBtn">
+                            <i class="fa fa-plus me-1"></i> Add to PPMP
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                   
+                    <h6 class="text-white p-2 mt-3 mb-0" style="background-color: #a83232;">CURRENT ITEMS</h6>
+                    <div class="table-responsive">
+                      <table class="table table-bordered table-striped" id="ppmpTable">
+                        <thead class="table-danger text-center">
+                          <tr>
+                            <th>Category</th>
+                            <th>Item</th>
+                            <th>Specification</th>
+                            <th>Cost</th>
+                            <th>Quantity</th>
+                            <th>Justification</th>
+                            <th>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody></tbody>
+                      </table>
+                    </div>
+                  </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">
+                  <i class="fa fa-times me-1"></i>  Cancel
+                  </button>
+                  <button type="submit" class="btn btn-primary btn-sm" id="submit_button">
+                    <i class="fa fa-save"></i> Submit
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- UPDATE MODAL -->
+        <div class="modal fade" id="UpdateModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog"> <!-- Changed to modal-lg for larger size -->
+            <form id="UpdateForm" autocomplete="off" enctype="multipart/form-data">
+
+              <input type="hidden" class="form-control" name="user_type" id="edit_user_type" value="Administrator"
+                required>
+
+              <div class="modal-content">
+                <div class="modal-header bg-light">
+                  <h5 class="modal-title" id="exampleModalLabel">Update Account</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><i class="fa fa-times-circle"></i></span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <input type="hidden" class="form-control" name="user_id" id="edit_user_id" required>
+                  <h6 class="text-primary mb-2">User Information</h6>
+                  <div class="form-group">
+                    <label for="edit_username">Username</label>
+                    <input type="text" class="form-control" name="username" id="edit_username" placeholder="Username" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="edit_first_name">First name</label>
+                    <input type="text" class="form-control" name="first_name" id="edit_first_name" placeholder="First name" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="edit_last_name">Last name</label>
+                    <input type="text" class="form-control" name="last_name" id="edit_last_name" placeholder="Last name" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="edit_phone">Mobile number</label>
+                    <div class="input-group">
+                      <div class="input-group-text">+63</div>
+                      <input type="tel" class="form-control" name="phone" id="edit_phone" placeholder="9123456789" maxlength="10" required>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="edit_email">Email address</label>
+                    <input type="email" class="form-control" name="email" id="edit_email" placeholder="Email address" required>
+                  </div>
+                  <h6 class="text-primary mb-2">Access Control</h6>
+                  <div class="form-group">
+                    <label for="edit_access_name">Access Role</label>
+                    <select class="form-control" name="access_name" id="edit_access_name" required>
+                      <option value="" disabled selected>Select access level</option>
+                      <option value="Procurement Head">Procurement Head</option>
+                      <option value="Sectors and Deans">Sectors and Deans</option>
+                      <option value="Budget Office">Budget Office</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><i
+                      class="fa fa-times"></i> Cancel</button>
+                  <button type="submit" class="btn btn-success btn-sm" id="edit_submit_button"><i
+                      class="fa fa-edit"></i> Update</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="card-box bg-white table-responsive pb-2">
+          <button data-toggle="modal" data-target="#AddNew" class="btn btn-sm btn-primary mb-3 ml-3 mt-1"><i
+              class="fa fa-plus"></i> Create PPMP</button>
+          <button id="delete-selected" class="btn btn-sm btn-danger mb-3 mt-1"><i class="fa fa-trash"></i>
+            Delete</button>
+          <table id="datatable" class="table table-striped table-bordered table-hover" style="width:100%">
+            <thead>
+              <tr>
+                <th><input type="checkbox" id="select-all" class="d-block m-auto"></th>
+                <th class="text-center">PROFILE</th>
+                <th>USERNAME</th>
+                <th>FULL NAME</th>
+                <th>EMAIL</th>
+                <th>PHONE</th>
+                <th>ACCESS ROLE</th>
+                <th>DATE CREATED</th>
+                <th class="text-center">ACTIONS</th>
+              </tr>
+            </thead>
+            <tbody>
+              <?php
+              $users = $db->getAllUsersWithAccess($userId);
+              while ($row = $users->fetch_assoc()) {
+              ?>
+                <tr>
+                  <td><input type="checkbox" class="select-record d-block m-auto" value="<?= $row['user_id'] ?>"></td>
+                  <td>
+                    <img src="../assets/img/user-profiles/<?= htmlspecialchars($row['profile'] ?: 'avatar.png'); ?>"
+                        alt="" width="35" height="35" class="img-circle d-block m-auto">
+                  </td>
+                  <td><?= htmlspecialchars($row['username']); ?></td>
+                  <td><?= ucwords($row['first_name'] . ' ' . $row['last_name']); ?></td>
+                  <td><?= htmlspecialchars($row['email']); ?></td>
+                  <td>+63<?= htmlspecialchars($row['phone']); ?></td>
+                  <td><?= htmlspecialchars($row['access_name']); ?></td>
+                  <td><?= date("F d, Y", strtotime($row['created_at'])); ?></td>
+                  <td class="text-center">
+                    <button 
+                      class="btn btn-success btn-sm edit-user"
+                      data-user-id="<?= $row['user_id']; ?>"
+                      data-username="<?= htmlspecialchars($row['username']); ?>"
+                      data-first_name="<?= htmlspecialchars($row['first_name']); ?>"
+                      data-last_name="<?= htmlspecialchars($row['last_name']); ?>"
+                      data-phone="<?= htmlspecialchars($row['phone']); ?>"
+                      data-email="<?= htmlspecialchars($row['email']); ?>"
+                      data-access_name="<?= htmlspecialchars($row['access_name']); ?>"
+                    >
+                      <i class="fa fa-edit"></i>
+                    </button>
+                  </td>
+                </tr>
+              <?php } ?>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /page content -->
+
+<?php require_once 'footer.php'; ?>
+<script>
+  document.getElementById("addBtn").addEventListener("click", function() {
+    const categorySelect = document.getElementById("category");
+    const categoryId = categorySelect.value;
+    const categoryName = categorySelect.options[categorySelect.selectedIndex].text;
+
+    const item = document.getElementById("item").value.trim();
+    const specification = document.getElementById("specification").value.trim();
+    const cost = document.getElementById("cost").value.trim();
+    const quantity = document.getElementById("quantity").value.trim();
+    const justification = document.getElementById("justification").value.trim();
+
+    if (!categoryId || !item || !specification || !cost || !quantity || !justification) {
+      Swal.fire({
+        title: "Missing Fields",
+        text: "Please fill out all fields before adding.",
+        icon: "warning",
+        confirmButtonColor: "#a83232"
+      });
+      return;
+    }
+
+    const table = document.getElementById("ppmpTable").querySelector("tbody");
+    const rows = table.getElementsByTagName("tr");
+
+    for (let i = 0; i < rows.length; i++) {
+      const existingCategory = rows[i].cells[0].innerText.trim();
+      if (existingCategory === categoryName) {
+        Swal.fire({
+          title: "Duplicate Category",
+          text: `The category "${categoryName}" has already been added.`,
+          icon: "error",
+          confirmButtonColor: "#a83232",
+        });
+        return;
+      }
+    }
+
+    const row = table.insertRow();
+
+    row.insertCell(0).innerText = categoryName;
+    row.setAttribute("data-category-id", categoryId);
+
+    row.insertCell(1).innerText = item;
+    row.insertCell(2).innerText = specification;
+    row.insertCell(3).innerText = cost;
+    row.insertCell(4).innerText = quantity;
+    row.insertCell(5).innerText = justification;
+
+    const actionCell = row.insertCell(6);
+    actionCell.classList.add("text-center");
+    const removeBtn = document.createElement("button");
+    removeBtn.className = "btn btn-sm btn-danger";
+    removeBtn.innerHTML = '<i class="fa fa-trash me-1"></i> Remove';
+    removeBtn.addEventListener("click", function() {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You are about to remove this item from PPMP.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, remove it!",
+        cancelButtonText: "Cancel",
+        confirmButtonColor: "#a83232",
+        cancelButtonColor: "#555555"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          row.remove();
+        }
+      });
+    });
+    actionCell.appendChild(removeBtn);
+
+    document.getElementById("SaveForm").reset();
+  });
+
+  document.getElementById("clearBtn").addEventListener("click", function() {
+    document.getElementById("SaveForm").reset();
+  });
+
+
+  
+  $(document).ready(function () {
+
+    $('#SaveForm').submit(function (e) {
+      e.preventDefault();
+      showSweetAlert("Please wait", "An email message will be sent to the updated user", "info"); //FORMAT: TITLE, TEXT, ICON, URL
+      var formData = new FormData($(this)[0]);
+      formData.append('action', 'AddUserForm');
+      $.ajax({
+        type: 'POST',
+        url: '../php/processes.php',
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function (response) {
+          if (response.success) {
+            showSweetAlert("Success!", response.message, "success", "users.php"); //FORMAT: TITLE, TEXT, ICON, URL
+          } else {
+            showSweetAlert("Error", response.message, "error"); //FORMAT: TITLE, TEXT, ICON, URL
+          }
+        }, error: function (xhr, status, error) {
+          console.error(xhr.responseText);
+        }
+      });
+    });
+
+    // Populate update modal with candidate data
+    $('#datatable').on('click', '.edit-user', function () {
+      const userID = $(this).data('user-id');
+      const username = $(this).data('username');
+      const firstName = $(this).data('first_name');
+      const lastName = $(this).data('last_name');
+      const phone = $(this).data('phone');
+      const email = $(this).data('email');
+      const accessName = $(this).data('access_name');
+
+      // Set values in the modal fields
+      $('#edit_user_id').val(userID);
+      $('#edit_username').val(username);
+      $('#edit_first_name').val(firstName);
+      $('#edit_last_name').val(lastName);
+      $('#edit_phone').val(phone);
+      $('#edit_email').val(email);
+      $('#edit_access_name').val(accessName);
+
+      // Show modal
+      $('#UpdateModal').modal('show');
+    });
+
+    $('#UpdateForm').submit(function (e) {
+      e.preventDefault();
+      var formData = new FormData($(this)[0]);
+      formData.append('action', 'UpdateUserForm');
+      $.ajax({
+        type: 'POST',
+        url: '../php/processes.php',
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function (response) {
+          if (response.success) {
+            showSweetAlert("Success!", response.message, "success", "users.php"); //FORMAT: TITLE, TEXT, ICON, URL
+          } else {
+            showSweetAlert("Error", response.message, "error"); //FORMAT: TITLE, TEXT, ICON, URL
+          }
+        }, error: function (xhr, status, error) {
+          console.error(xhr.responseText);
+        }
+      });
+    });
+
+    // MULTIPLE DELETION
+    $('#select-all').on('click', function () {
+      var isChecked = $(this).is(':checked');
+      $('.select-record').prop('checked', isChecked);
+    });
+
+    $('#datatable').on('change', '.select-record', function () {
+      // If any checkbox is unchecked, uncheck "select-all"
+      if (!$(this).is(':checked')) {
+        $('#select-all').prop('checked', false);
+      } else {
+        // If all checkboxes are checked, check the "select-all"
+        var allChecked = $('.select-record').length === $('.select-record:checked').length;
+        $('#select-all').prop('checked', allChecked);
+      }
+    });
+
+    // Delete selected button
+    $('#delete-selected').on('click', function () {
+      var selectedIDs = [];
+      $('.select-record:checked').each(function () {
+        selectedIDs.push($(this).val());
+      });
+
+      if (selectedIDs.length === 0) {
+        Swal.fire("No selection", "Please select at least one record to delete.", "info");
+        return;
+      }
+
+      confirmMultipleDeletion(selectedIDs.length, function () {
+        deleteMultipleRecords("users", "user_id", selectedIDs, "users.php");
+      });
+    });
+
+
+  });
+
+</script>
