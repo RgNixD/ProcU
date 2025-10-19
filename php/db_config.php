@@ -46,9 +46,9 @@
 			return 'index.php';
 
 		if (!empty($permissions['can_manage_budget']) || !empty($permissions['can_approve_ppmp'])) {
-			return 'Admin/index.php';
+			return 'pages/index.php';
 		} elseif (!empty($permissions['can_create_ppmp'])) {
-			return 'Staff/index.php';
+			return 'pages/index.php';
 		}
 		return 'index.php';
 	}

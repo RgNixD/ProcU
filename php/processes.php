@@ -187,7 +187,332 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     $response = ['message' => "Error changing password"];
                 }
                 break;
+            
+            case "AddUserForm":
+
+                $username = $_POST['username'] ?? '';
+                $first_name = $_POST['first_name'] ?? '';
+                $last_name = $_POST['last_name'] ?? '';
+                $phone = $_POST['phone'] ?? '';
+                $email = $_POST['email'] ?? '';
+                $access_name = $_POST['access_name'] ?? '';
+
+                $result = $db->AddUserForm($username, $first_name, $last_name, $phone, $email, $access_name, $operator_ID);
+                if ($result === true) {
+                    $response = ['success' => true, 'message' => $access_name." user successfully added"];
+                } elseif (is_string($result)) {
+                    $response = ['message' => $result];
+                } else {
+                    $response = ['message' => "Error adding user"];
+                }
+                break;
+
+            case "UpdateUserForm":
+
+                $user_id = $_POST['user_id'] ?? '';
+                $username = $_POST['username'] ?? '';
+                $first_name = $_POST['first_name'] ?? '';
+                $last_name = $_POST['last_name'] ?? '';
+                $phone = $_POST['phone'] ?? '';
+                $email = $_POST['email'] ?? '';
+                $access_name = $_POST['access_name'] ?? '';
+
+                $result = $db->UpdateUserForm($user_id, $username, $first_name, $last_name, $phone, $email, $access_name, $operator_ID);
+                if ($result === true) {
+                    $response = ['success' => true, 'message' => $access_name." user successfully added"];
+                } elseif (is_string($result)) {
+                    $response = ['message' => $result];
+                } else {
+                    $response = ['message' => "Error adding user"];
+                }
+                break;
             // END USER MANAGEMENT PROCESSES**********************************************************
+
+
+            // CATEGORY PROCESSES**********************************************************
+            case "AddCategoryForm":
+
+                $category_name = $_POST['category_name'] ?? '';
+                $category_code = $_POST['category_code'] ?? '';
+                $description = $_POST['description'] ?? '';
+
+                $result = $db->AddCategoryForm($category_name, $category_code, $description, $operator_ID);
+                if ($result === true) {
+                    $response = ['success' => true, 'message' => "Category successfully added"];
+                } elseif (is_string($result)) {
+                    $response = ['message' => $result];
+                } else {
+                    $response = ['message' => "Error adding category"];
+                }
+                break;
+
+            case "UpdateCategoryForm":
+
+                $category_id = $_POST['category_id'] ?? '';
+                $category_name = $_POST['category_name'] ?? '';
+                $category_code = $_POST['category_code'] ?? '';
+                $description = $_POST['description'] ?? '';
+                $is_active = $_POST['is_active'] ?? '';
+
+                $result = $db->UpdateCategoryForm($category_id, $category_name, $category_code, $description, $is_active, $operator_ID);
+                if ($result === true) {
+                    $response = ['success' => true, 'message' => "Category successfully updated"];
+                } elseif (is_string($result)) {
+                    $response = ['message' => $result];
+                } else {
+                    $response = ['message' => "Error adding category"];
+                }
+                break;
+            // END CATEGORY PROCESSES**********************************************************
+
+            // SUB-CATEGORY PROCESSES **********************************************************
+            case "AddSubCategoryForm":
+
+                $category_id = $_POST['category_id'] ?? '';
+                $sub_cat_name = $_POST['sub_cat_name'] ?? '';
+                $sub_cat_description = $_POST['sub_cat_description'] ?? '';
+
+                $result = $db->AddSubCategoryForm($category_id, $sub_cat_name, $sub_cat_description, $operator_ID);
+
+                if ($result === true) {
+                    $response = ['success' => true, 'message' => "Sub-category successfully added"];
+                } elseif (is_string($result)) {
+                    $response = ['message' => $result];
+                } else {
+                    $response = ['message' => "Error adding sub-category"];
+                }
+                break;
+
+            case "UpdateSubCategoryForm":
+
+                $sub_category_id = $_POST['sub_category_id'] ?? '';
+                $category_id = $_POST['category_id'] ?? '';
+                $sub_cat_name = $_POST['sub_cat_name'] ?? '';
+                $sub_cat_description = $_POST['sub_cat_description'] ?? '';
+
+                $result = $db->UpdateSubCategoryForm($sub_category_id, $category_id, $sub_cat_name, $sub_cat_description, $operator_ID);
+
+                if ($result === true) {
+                    $response = ['success' => true, 'message' => "Sub-category successfully updated"];
+                } elseif (is_string($result)) {
+                    $response = ['message' => $result];
+                } else {
+                    $response = ['message' => "Error updating sub-category"];
+                }
+                break;
+                
+            case "GetSubcategoriesByCategory":
+                $category_id = $_POST['category_id'] ?? 0;
+
+                if (!$category_id) {
+                    $response = ['success' => false, 'message' => 'Invalid category ID.'];
+                    break;
+                }
+
+                $subcategories = $db->getSubcategoriesByCategory($category_id);
+
+                if ($subcategories) {
+                    $response = ['success' => true, 'data' => $subcategories];
+                } else {
+                    $response = ['success' => false, 'message' => 'No subcategories found for this category.'];
+                }
+                break;
+            // END SUB-CATEGORY PROCESSES **********************************************************
+
+
+            // FISCAL YEAR PROCESSES**********************************************************
+            case "AddFiscalYearForm":
+
+                $year = $_POST['year'] ?? '';
+                $start_date = $_POST['start_date'] ?? '';
+                $end_date = $_POST['end_date'] ?? '';
+
+                $result = $db->AddFiscalYearForm($year, $start_date, $end_date, $operator_ID);
+                if ($result === true) {
+                    $response = ['success' => true, 'message' => "Fiscal Year successfully added"];
+                } elseif (is_string($result)) {
+                    $response = ['message' => $result];
+                } else {
+                    $response = ['message' => "Error adding Fiscal Year"];
+                }
+                break;
+
+            case "UpdateFiscalYearForm":
+
+                $fiscal_year_id = $_POST['fiscal_year_id'] ?? '';
+                $year = $_POST['year'] ?? '';
+                $start_date = $_POST['start_date'] ?? '';
+                $end_date = $_POST['end_date'] ?? '';
+                $is_current = $_POST['is_current'] ?? '';
+                $status = $_POST['status'] ?? '';
+
+                $result = $db->UpdateFiscalYearForm($fiscal_year_id, $year, $start_date, $end_date, $is_current, $status, $operator_ID);
+                if ($result === true) {
+                    $response = ['success' => true, 'message' => "Fiscal Year successfully updated"];
+                } elseif (is_string($result)) {
+                    $response = ['message' => $result];
+                } else {
+                    $response = ['message' => "Error adding Fiscal Year"];
+                }
+                break;
+            // END FISCAL YEAR PROCESSES**********************************************************
+
+
+            // OFFICE PROCESSES**********************************************************
+            case "AddOfficeForm":
+
+                $office_name = $_POST['office_name'] ?? '';
+                $office_code = $_POST['office_code'] ?? '';
+                $head_id = $_POST['head_id'] ?? '';
+                $description = $_POST['description'] ?? '';
+
+                $result = $db->AddOfficeForm($office_name, $office_code, $head_id, $description, $operator_ID);
+
+                if ($result === true) {
+                    $response = ['success' => true, 'message' => "Office successfully added"];
+                } elseif (is_string($result)) {
+                    $response = ['message' => $result];
+                } else {
+                    $response = ['message' => "Error adding office"];
+                }
+                break;
+
+            case "UpdateOfficeForm":
+
+                $office_id = $_POST['office_id'] ?? '';
+                $office_name = $_POST['office_name'] ?? '';
+                $office_code = $_POST['office_code'] ?? '';
+                $head_id = $_POST['head_id'] ?? '';
+                $description = $_POST['description'] ?? '';
+
+                $result = $db->UpdateOfficeForm($office_id, $office_name, $office_code, $head_id, $description, $operator_ID);
+
+                if ($result === true) {
+                    $response = ['success' => true, 'message' => "Office successfully updated"];
+                } elseif (is_string($result)) {
+                    $response = ['message' => $result];
+                } else {
+                    $response = ['message' => "Error adding office"];
+                }
+                break;
+            // END OFFICE PROCESSES**********************************************************
+
+
+            // BUDGET ALLOCATION PROCESSES**********************************************************
+            case "AddBudgetAllocation":
+
+                $office_id = $_POST['office_id'] ?? '';
+                $amount = $_POST['amount'] ?? '';
+
+                $result = $db->AddBudgetAllocation($office_id, $amount, $operator_ID);
+
+                if ($result === true) {
+                    $response = ['success' => true, 'message' => "Budget Allocation successfully added"];
+                } elseif (is_string($result)) {
+                    $response = ['message' => $result];
+                } else {
+                    $response = ['message' => "Error adding budget allocation"];
+                }
+                break;
+
+            case "UpdateBudgetAllocation":
+
+                $allocation_id = $_POST['allocation_id'] ?? '';
+                $office_id = $_POST['office_id'] ?? '';
+                $amount = $_POST['amount'] ?? '';
+                $status = $_POST['status'] ?? '';
+
+                $result = $db->UpdateBudgetAllocation($allocation_id, $office_id, $amount, $status, $operator_ID);
+
+                if ($result === true) {
+                    $response = ['success' => true, 'message' => "Budget Allocation successfully updated"];
+                } elseif (is_string($result)) {
+                    $response = ['message' => $result];
+                } else {
+                    $response = ['message' => "Error updating budget allocation"];
+                }
+                break;
+            // END BUDGET ALLOCATION PROCESSES**********************************************************
+
+
+            // PPMP PROCESSES**********************************************************
+            case "AddPPMPForm":
+                $user_id = $_POST['user_id'] ?? '';
+                $ppmp_items = $_POST['ppmp_items'] ?? '[]';
+                $ppmp_items = json_decode($ppmp_items, true);
+
+                if (empty($user_id) || empty($ppmp_items)) {
+                    $response = ['message' => 'Missing user ID or items.'];
+                    break;
+                }
+
+                $result = $db->AddPPMPForm($user_id, $ppmp_items);
+
+                if ($result === true) {
+                    $response = ['success' => true, 'message' => 'PPMP and items successfully added.'];
+                } elseif (is_string($result)) {
+                    $response = ['message' => $result];
+                } else {
+                    $response = ['message' => 'Error adding PPMP.'];
+                }
+                break;
+
+            case "GetPPMPItems":
+                $ppmp_id = $_POST['ppmp_id'] ?? 0;
+
+                if (empty($ppmp_id)) {
+                    $response = ['success' => false, 'message' => 'Missing PPMP ID.'];
+                    break;
+                }
+
+                $result = $db->getPPMPItemsById($ppmp_id);
+
+                $items = [];
+                while ($row = $result->fetch_assoc()) {
+                    $items[] = $row;
+                }
+
+                $response = ['success' => true, 'data' => $items];
+                break;
+
+            // END PPMP PROCESSES**********************************************************
+
+
+            // DELETE RECORD PROCESSES**********************************************************
+            case "delete_Record":
+                $table = $_POST['table'] ?? '';
+                $delete_column = $_POST['delete_column'] ?? '';
+
+                if (isset($_POST['delete_IDs']) && !empty($_POST['delete_IDs'])) {
+                    $delete_IDs = json_decode($_POST['delete_IDs'], true);
+                    if (is_array($delete_IDs)) {
+                        $result = $db->DeleteRecords($table, $delete_column, $delete_IDs, $operator_ID, $loggedInUserType);
+                    } else {
+                        $response = [
+                            'success' => false,
+                            'message' => "Invalid delete_IDs format."
+                        ];
+                        echo json_encode($response);
+                        exit;
+                    }
+                } else {
+                    $delete_ID = $_POST['delete_ID'] ?? '';
+                    $result = $db->DeleteRecordForm($table, $delete_column, $delete_ID, $operator_ID, $loggedInUserType);
+                }
+
+                if ($result) {
+                    $response = [
+                        'success' => true,
+                        'message' => "Record(s) have been deleted!"
+                    ];
+                } else {
+                    $response = [
+                        'success' => false,
+                        'message' => "Deleting record(s) failed!"
+                    ];
+                }
+                break;
+            // END DELETE RECORD PROCESSES**********************************************************
 
             case "logout_user":
                 $userId = $_SESSION['user_id'] ?? null;
