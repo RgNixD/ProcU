@@ -12,7 +12,7 @@
   <div class="">
     <div class="page-title">
       <div class="title_left">
-        <h3>Offices</h3>
+        <h3>Sub Categories</h3>
       </div>
     </div>
 
@@ -20,47 +20,45 @@
 
     <div class="x_panel">
       <div class="x_title">
-        <h2>Offices List</h2>
+        <h2>Sub Categories List</h2>
         <div class="clearfix"></div>
       </div>
       <div class="x_content">
 
-        <!-- ADD MODAL -->
-        <div class="modal fade" id="AddNew" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <!-- ADD SUBCATEGORY MODAL -->
+        <div class="modal fade" id="AddNew" tabindex="-1" aria-labelledby="AddSubCategoryLabel" aria-hidden="true">
           <div class="modal-dialog">
             <form id="SaveForm" autocomplete="off" enctype="multipart/form-data">
               <div class="modal-content">
                 <div class="modal-header bg-light">
-                  <h5 class="modal-title" id="exampleModalLabel">New Office</h5>
+                  <h5 class="modal-title" id="AddSubCategoryLabel">New Sub-category</h5>
                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true"><i class="fa fa-times-circle"></i></span>
                   </button>
                 </div>
+
                 <div class="modal-body">
                   <div class="form-group">
-                    <label for="office_name">Office Name</label>
-                    <input type="text" class="form-control" name="office_name" id="office_name" placeholder="Enter office name" required>
-                  </div>
-                  <div class="form-group">
-                    <label for="office_code">Office Code</label>
-                    <input type="text" class="form-control" name="office_code" id="office_code" placeholder="Enter office code" required>
-                  </div>
-                  <div class="form-group">
-                    <label for="head_id">Head of Office</label>
-                    <select class="form-control" name="head_id" id="head_id" required>
-                      <option value="" disabled selected>Select Office Head</option>
+                    <label for="category_id">Category</label>
+                    <select class="form-control" name="category_id" id="category_id" required>
+                      <option value="">Select Category</option>
                       <?php
-                        $users = $db->getAvailableSectorsForHead();
-                        while ($user = $users->fetch_assoc()) {
-                            $fullname = htmlspecialchars($user['first_name'] . ' ' . $user['last_name']);
-                            echo '<option value="' . htmlspecialchars($user['user_id']) . '">' . $fullname . '</option>';
-                        }
+                      $categories = $db->getAllCategories();
+                      while ($row2 = $categories->fetch_assoc()):
                       ?>
+                        <option value="<?= htmlspecialchars($row2['category_id']); ?>">
+                          <?= htmlspecialchars($row2['category_name']); ?>
+                        </option>
+                      <?php endwhile; ?>
                     </select>
                   </div>
                   <div class="form-group">
-                    <label for="description">Description</label>
-                    <textarea class="form-control" name="description" id="description" placeholder="Enter office description"></textarea>
+                    <label for="sub_cat_name">Sub-category Name</label>
+                    <input type="text" class="form-control" name="sub_cat_name" id="sub_cat_name" placeholder="Enter sub-category name" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="sub_cat_description">Description</label>
+                    <textarea class="form-control" name="sub_cat_description" id="sub_cat_description" rows="3" placeholder="Enter sub-category description"></textarea>
                   </div>
                 </div>
                 <div class="modal-footer">
@@ -82,37 +80,34 @@
             <form id="UpdateForm" autocomplete="off" enctype="multipart/form-data">
               <div class="modal-content">
                 <div class="modal-header bg-light">
-                  <h5 class="modal-title" id="exampleModalLabel">Update Office</h5>
+                  <h5 class="modal-title" id="exampleModalLabel">Update Sub-Category</h5>
                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true"><i class="fa fa-times-circle"></i></span>
                   </button>
                 </div>
                 <div class="modal-body">
-                  <input type="hidden" class="form-control" name="office_id" id="edit_office_id" required>
+                  <input type="hidden" class="form-control" name="sub_category_id" id="edit_sub_category_id" required>
                   <div class="form-group">
-                    <label for="edit_office_name">Office Name</label>
-                    <input type="text" class="form-control" name="office_name" id="edit_office_name" placeholder="Enter office name" required>
-                  </div>
-                  <div class="form-group">
-                    <label for="edit_office_code">Office Code</label>
-                    <input type="text" class="form-control" name="office_code" id="edit_office_code" placeholder="Enter office code" required>
-                  </div>
-                  <div class="form-group">
-                    <label for="edit_head_id">Head of Office</label>
-                    <select class="form-control" name="head_id" id="edit_head_id" required>
-                      <option value="" disabled selected>Select Office Head</option>
+                    <label for="edit_category_id">Category</label>
+                    <select class="form-control" name="category_id" id="edit_category_id" required>
+                      <option value="">Select Category</option>
                       <?php
-                        $users = $db->getAllSectors();
-                        while ($user = $users->fetch_assoc()) {
-                            $fullname = htmlspecialchars($user['first_name'] . ' ' . $user['last_name']);
-                            echo '<option value="' . htmlspecialchars($user['user_id']) . '">' . $fullname . '</option>';
-                        }
+                      $categories = $db->getAllCategories();
+                      while ($row2 = $categories->fetch_assoc()):
                       ?>
+                        <option value="<?= htmlspecialchars($row2['category_id']); ?>">
+                          <?= htmlspecialchars($row2['category_name']); ?>
+                        </option>
+                      <?php endwhile; ?>
                     </select>
                   </div>
                   <div class="form-group">
-                    <label for="edit_description">Description</label>
-                    <textarea class="form-control" name="description" id="edit_description" placeholder="Enter office description"></textarea>
+                    <label for="edit_sub_cat_name">Sub-category Name</label>
+                    <input type="text" class="form-control" name="sub_cat_name" id="edit_sub_cat_name" placeholder="Enter sub-category name" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="edit_sub_cat_description">Description</label>
+                    <textarea class="form-control" name="sub_cat_description" id="edit_sub_cat_description" rows="3" placeholder="Enter sub-category description"></textarea>
                   </div>
                 </div>
                 <div class="modal-footer">
@@ -127,45 +122,39 @@
         </div>
 
         <div class="card-box bg-white table-responsive pb-2">
-          <button data-toggle="modal" data-target="#AddNew" class="btn btn-sm btn-primary mb-3 ml-3 mt-1" title="Create Office"><i
+          <button data-toggle="modal" data-target="#AddNew" class="btn btn-sm btn-primary mb-3 ml-3 mt-1" title="Create sub-category"><i
               class="fa fa-plus"></i></button>
-          <button id="delete-selected" class="btn btn-sm btn-danger mb-3 mt-1" title="Delete Office"><i class="fa fa-trash"></i></button>
+          <button id="delete-selected" class="btn btn-sm btn-danger mb-3 mt-1" title="Delete sub-category"><i class="fa fa-trash"></i></button>
           <table id="datatable" class="table table-striped table-bordered table-hover" style="width:100%">
             <thead>
               <tr>
                 <th><input type="checkbox" id="select-all" class="d-block m-auto"></th>
-                <th>OFFICE NAME</th>
-                <th>OFFICE CODE</th>
-                <th>OFFICE HEAD</th>
-                <th class="d-none">EMAIL</th>
-                <th class="d-none">PHONE</th>
-                <th class="d-none">ROLE</th>
-                <th>DATE CREATED</th>
+                <th>CATEGORY NAME</th>
+                <th>SUB-CATEGORY NAME</th>
+                <th>DESCRIPTION</th>
+                <th class="d-none">DATE CREATED</th>
                 <th class="text-center">ACTIONS</th>
               </tr>
             </thead>
             <tbody>
               <?php
-              $offices = $db->getAllOffices();
-              while ($row = $offices->fetch_assoc()) {
+              $subCategories = $db->getAllSubCategories();
+              while ($row = $subCategories->fetch_assoc()) {
               ?>
                 <tr>
-                  <td><input type="checkbox" class="select-record d-block m-auto" name="record_<?= $row['office_id'] ?>" id="record_<?= $row['office_id'] ?>" value="<?= $row['office_id'] ?>"></td>
-                  <td><?= htmlspecialchars($row['office_name']); ?></td>
-                  <td><?= htmlspecialchars($row['office_code']); ?></td>
-                  <td><?= htmlspecialchars($row['head_name'] ?: '—'); ?></td>
-                  <td class="d-none"><?= htmlspecialchars($row['head_email'] ?: '—'); ?></td>
-                  <td class="d-none"><?= $row['head_phone'] ? '+63' . htmlspecialchars($row['head_phone']) : '—'; ?></td>
-                  <td class="d-none"><?= htmlspecialchars($row['head_role'] ?: '—'); ?></td>
-                  <td><?= date("M. d, Y", strtotime($row['created_at'])); ?></td>
+                  <td><input type="checkbox" class="select-record d-block m-auto" name="record_<?= $row['sub_category_id'] ?>" id="record_<?= $row['sub_category_id'] ?>" value="<?= $row['sub_category_id']; ?>"></td>
+                  <td><?= htmlspecialchars($row['category_name']); ?></td>
+                  <td><?= htmlspecialchars($row['sub_cat_name']); ?></td>
+                  <td><?= htmlspecialchars($row['sub_cat_description']); ?></td>
+                  <td class="d-none"><?= date('Y-m-d', strtotime($row['created_at'])); ?></td>
                   <td class="text-center">
                     <button 
-                      class="btn btn-success btn-sm edit-office" title="Edit office"
-                      data-office-id="<?= $row['office_id']; ?>"
-                      data-office-name="<?= htmlspecialchars($row['office_name']); ?>"
-                      data-office-code="<?= htmlspecialchars($row['office_code']); ?>"
-                      data-description="<?= htmlspecialchars($row['description']); ?>"
-                      data-head-id="<?= htmlspecialchars($row['head_name']); ?>"
+                      class="btn btn-success btn-sm edit-subcategory" 
+                      title="Edit sub-category"
+                      data-sub-category-id="<?= $row['sub_category_id']; ?>"
+                      data-category-id="<?= $row['category_id']; ?>"
+                      data-sub-cat-name="<?= htmlspecialchars($row['sub_cat_name']); ?>"
+                      data-sub-cat-description="<?= htmlspecialchars($row['sub_cat_description']); ?>"
                     >
                       <i class="fa fa-edit"></i>
                     </button>
@@ -189,7 +178,7 @@
     $('#SaveForm').submit(function (e) {
       e.preventDefault();
       var formData = new FormData($(this)[0]);
-      formData.append('action', 'AddOfficeForm');
+      formData.append('action', 'AddSubCategoryForm');
       $.ajax({
         type: 'POST',
         url: '../php/processes.php',
@@ -198,7 +187,7 @@
         processData: false,
         success: function (response) {
           if (response.success) {
-            showSweetAlert("Success!", response.message, "success", "offices.php"); //FORMAT: TITLE, TEXT, ICON, URL
+            showSweetAlert("Success!", response.message, "success", "sub-categories.php"); //FORMAT: TITLE, TEXT, ICON, URL
           } else {
             showSweetAlert("Error", response.message, "error"); //FORMAT: TITLE, TEXT, ICON, URL
           }
@@ -208,21 +197,17 @@
       });
     });
 
-    $('#datatable').on('click', '.edit-office', function () {
-      const officeId = $(this).data('office-id');
-      const officeName = $(this).data('office-name');
-      const officeCode = $(this).data('office-code');
-      const description = $(this).data('description');
-      const headName = $(this).data('head-id');
+    
+    $('#datatable').on('click', '.edit-subcategory', function () {
+      const sub_category_id = $(this).data('sub-category-id');
+      const category_id = $(this).data('category-id');
+      const sub_cat_name = $(this).data('sub-cat-name');
+      const sub_cat_description = $(this).data('sub-cat-description');
 
-      $('#edit_office_id').val(officeId);
-      $('#edit_office_name').val(officeName);
-      $('#edit_office_code').val(officeCode);
-      $('#edit_description').val(description);
-
-      $('#edit_head_id option').filter(function () {
-        return $(this).text().trim() === headName;
-      }).prop('selected', true);
+      $('#edit_sub_category_id').val(sub_category_id);
+      $('#edit_category_id').val(category_id);
+      $('#edit_sub_cat_name').val(sub_cat_name);
+      $('#edit_sub_cat_description').val(sub_cat_description);
 
       $('#UpdateModal').modal('show');
     });
@@ -230,7 +215,7 @@
     $('#UpdateForm').submit(function (e) {
       e.preventDefault();
       var formData = new FormData($(this)[0]);
-      formData.append('action', 'UpdateOfficeForm');
+      formData.append('action', 'UpdateSubCategoryForm');
       $.ajax({
         type: 'POST',
         url: '../php/processes.php',
@@ -239,7 +224,7 @@
         processData: false,
         success: function (response) {
           if (response.success) {
-            showSweetAlert("Success!", response.message, "success", "offices.php"); //FORMAT: TITLE, TEXT, ICON, URL
+            showSweetAlert("Success!", response.message, "success", "sub-categories.php"); //FORMAT: TITLE, TEXT, ICON, URL
           } else {
             showSweetAlert("Error", response.message, "error"); //FORMAT: TITLE, TEXT, ICON, URL
           }
@@ -279,7 +264,7 @@
       }
 
       confirmMultipleDeletion(selectedIDs.length, function () {
-        deleteMultipleRecords("offices", "office_id", selectedIDs, "offices.php");
+        deleteMultipleRecords("sub_categories", "sub_category_id", selectedIDs, "sub-categories.php");
       });
     });
 
