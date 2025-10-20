@@ -442,7 +442,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $ppmp_items = json_decode($ppmp_items, true);
 
                 if (empty($user_id) || empty($ppmp_items)) {
-                    $response = ['message' => 'Missing user ID or items.'];
+                    $response = ['message' => 'Incomplete data provided. Please ensure all required fields (User ID, and Items) are filled in before proceeding.'];
                     break;
                 }
 
@@ -454,6 +454,28 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     $response = ['message' => $result];
                 } else {
                     $response = ['message' => 'Error adding PPMP.'];
+                }
+                break;
+
+            case "UpdatePPMPForm":
+                $ppmp_id = $_POST['ppmp_id'] ?? '';
+                $user_id = $_POST['user_id'] ?? '';
+                $ppmp_items = $_POST['ppmp_items'] ?? '[]';
+                $ppmp_items = json_decode($ppmp_items, true);
+
+                if (empty($ppmp_id) || empty($user_id) || empty($ppmp_items)) {
+                    $response = ['message' => 'Incomplete data provided. Please ensure all required fields (PPMP ID, User ID, and Items) are filled in before proceeding.'];
+                    break;
+                }
+
+                $result = $db->UpdatePPMPForm($ppmp_id, $user_id, $ppmp_items);
+
+                if ($result === true) {
+                    $response = ['success' => true, 'message' => 'PPMP and items successfully updated.'];
+                } elseif (is_string($result)) {
+                    $response = ['message' => $result];
+                } else {
+                    $response = ['message' => 'Error updating PPMP.'];
                 }
                 break;
 
@@ -474,7 +496,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                 $response = ['success' => true, 'data' => $items];
                 break;
-
             // END PPMP PROCESSES**********************************************************
 
 
@@ -501,9 +522,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 }
 
                 if ($result) {
+                    if (isset($delete_IDs) && is_array($delete_IDs)) {
+                        $count = count($delete_IDs);
+                    } else {
+                        $count = 1;
+                    }
+
+                    $message = ($count === 1)
+                        ? "Record has been deleted!"
+                        : "$count records have been deleted!";
+
                     $response = [
                         'success' => true,
-                        'message' => "Record(s) have been deleted!"
+                        'message' => $message
                     ];
                 } else {
                     $response = [

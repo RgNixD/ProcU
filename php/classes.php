@@ -1346,6 +1346,43 @@ class db_class extends db_connect
         
         return $this->conn->query($sql);
     }
+
+    public function getRemainingBudgetByUser($user_id)
+    {
+        $office_id = $this->getOfficeIdByHead($user_id);
+        if (!$office_id) {
+            return "No office found for this user."; 
+        }
+
+        $sqlFiscal = "SELECT fiscal_year_id FROM fiscal_years WHERE is_current = 1 AND status = 1 LIMIT 1";
+        $resultFiscal = $this->conn->query($sqlFiscal);
+
+        if (!$resultFiscal || $resultFiscal->num_rows === 0) {
+            return "No active fiscal year found."; 
+        }
+
+        $fiscal_year = $resultFiscal->fetch_assoc();
+        $fiscal_year_id = $fiscal_year['fiscal_year_id'];
+
+        $stmt = $this->conn->prepare("
+            SELECT remaining_amount 
+            FROM budget_allocation 
+            WHERE office_id = ? AND fiscal_year_id = ? 
+            AND status = 'Approved'
+            LIMIT 1
+        ");
+        $stmt->bind_param("ii", $office_id, $fiscal_year_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result && $result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            return $row['remaining_amount'];
+        } else {
+            return "No approved budget allocation found for this office in the current fiscal year.";
+        }
+    }
+
     public function AddBudgetAllocation($office_id, $amount, $operator_ID)
     {
         $fiscal_year = $this->getCurrentFiscalYear();
@@ -1356,12 +1393,13 @@ class db_class extends db_connect
         $fiscal_year_id = $fiscal_year['fiscal_year_id'];
 
         $check_stmt = $this->conn->prepare("
-        SELECT status FROM budget_allocation 
-        WHERE office_id = ? AND fiscal_year_id = ? 
-        ORDER BY allocation_id DESC LIMIT 1
+            SELECT status FROM budget_allocation 
+            WHERE office_id = ? AND fiscal_year_id = ? 
+            ORDER BY allocation_id DESC LIMIT 1
         ");
         $check_stmt->bind_param("ii", $office_id, $fiscal_year_id);
         $check_stmt->execute();
+        $existing_status = null;
         $check_stmt->bind_result($existing_status);
         $exists = $check_stmt->fetch();
         $check_stmt->close();
@@ -1412,6 +1450,7 @@ class db_class extends db_connect
         ");
         $check_stmt->bind_param("iii", $office_id, $fiscal_year_id, $allocation_id);
         $check_stmt->execute();
+        $existing_status = null;
         $check_stmt->bind_result($existing_status);
         $exists = $check_stmt->fetch();
         $check_stmt->close();
@@ -1452,7 +1491,7 @@ class db_class extends db_connect
 
 
     // PPMP FUNCTIONS **********************************************************
-    public function getAllPPMPRecords()
+    public function getAllPPMPRecords($userId = null)
     {
         $sql = "
             SELECT 
@@ -1482,13 +1521,29 @@ class db_class extends db_connect
             INNER JOIN offices o ON p.office_id = o.office_id
             INNER JOIN fiscal_years fy ON p.fiscal_year_id = fy.fiscal_year_id
             INNER JOIN users u ON p.submitted_by = u.user_id
-            ORDER BY p.created_at DESC
         ";
 
-        $result = $this->conn->query($sql);
+        if (!empty($userId)) {
+            $sql .= " WHERE p.submitted_by = ?";
+        }
+
+        $sql .= " ORDER BY p.created_at DESC";
+
+        // Prepare statement
+        $stmt = $this->conn->prepare($sql);
+        if (!$stmt) {
+            throw new Exception("Database error: " . $this->conn->error);
+        }
+
+        if (!empty($userId)) {
+            $stmt->bind_param("i", $userId);
+        }
+
+        $stmt->execute();
+        $result = $stmt->get_result();
 
         if (!$result) {
-            throw new Exception("Database error: " . $this->conn->error);
+            throw new Exception("Query execution failed: " . $this->conn->error);
         }
 
         return $result;
@@ -1499,6 +1554,8 @@ class db_class extends db_connect
         $sql = "
             SELECT 
                 i.item_id,
+                i.category_id,
+                i.sub_category_id,
                 i.item_name,
                 i.item_description,
                 i.specifications,
@@ -1566,6 +1623,9 @@ class db_class extends db_connect
                 throw new Exception("No budget allocation found for this office in the current fiscal year.");
             }
 
+            $allocation_id = null;
+            $remaining_amount = null;
+            $status = null;
             $alloc_stmt->bind_result($allocation_id, $remaining_amount, $status);
             $alloc_stmt->fetch();
             $alloc_stmt->close();
@@ -1575,7 +1635,8 @@ class db_class extends db_connect
             }
 
             if ($total_amount > $remaining_amount) {
-                throw new Exception("Insufficient budget. Remaining balance is ₱" . number_format($remaining_amount, 2) . 
+                $remaining_display = is_numeric($remaining_amount) ? number_format((float)$remaining_amount, 2) : '0.00';
+                throw new Exception("Insufficient budget. Remaining balance is ₱" . $remaining_display . 
                     " but PPMP total is ₱" . number_format($total_amount, 2) . ".");
             }
 
@@ -1650,6 +1711,132 @@ class db_class extends db_connect
             return $e->getMessage();
         }
     }
+
+    public function UpdatePPMPForm($ppmp_id, $user_id, $items)
+{
+    $this->conn->begin_transaction();
+
+    try {
+        // Validate PPMP existence
+        $ppmp_stmt = $this->conn->prepare("
+            SELECT p.office_id, p.fiscal_year_id, p.total_amount, b.remaining_amount, b.status, b.allocation_id
+            FROM ppmp p
+            INNER JOIN budget_allocation b ON p.office_id = b.office_id AND p.fiscal_year_id = b.fiscal_year_id
+            WHERE p.ppmp_id = ?
+            ORDER BY b.allocation_id DESC
+            LIMIT 1
+        ");
+        $ppmp_stmt->bind_param("i", $ppmp_id);
+        $ppmp_stmt->execute();
+        $ppmp_stmt->store_result();
+
+        if ($ppmp_stmt->num_rows === 0) {
+            throw new Exception("PPMP record not found for update.");
+        }
+
+        $office_id = $fiscal_year_id = $current_total = $remaining_amount = $status = $allocation_id = null;
+        $ppmp_stmt->bind_result($office_id, $fiscal_year_id, $current_total, $remaining_amount, $status, $allocation_id);
+        $ppmp_stmt->fetch();
+        $ppmp_stmt->close();
+
+        if (strtolower($status) !== 'approved') {
+            throw new Exception("Budget allocation exists but is not approved yet (Status: " . ucfirst($status) . ").");
+        }
+
+        // Recalculate new total
+        $new_total = 0;
+        foreach ($items as $it) {
+            $new_total += floatval($it['total_cost']);
+        }
+
+        if ($new_total > $remaining_amount + $current_total) {
+            $remaining_display = number_format((float)$remaining_amount + (float)$current_total, 2);
+            throw new Exception("Insufficient budget. Available budget (including old PPMP total) is ₱" . $remaining_display .
+                ", but new total is ₱" . number_format($new_total, 2) . ".");
+        }
+
+        // Update PPMP total and date
+        $update_stmt = $this->conn->prepare("
+            UPDATE ppmp 
+            SET total_amount = ? 
+            WHERE submitted_by = ? AND ppmp_id = ?
+        ");
+        $update_stmt->bind_param("dii", $new_total, $user_id, $ppmp_id);
+        if (!$update_stmt->execute()) {
+            throw new Exception("Failed to update PPMP record: " . $update_stmt->error);
+        }
+        $update_stmt->close();
+
+        // Delete old PPMP items first
+        $delete_stmt = $this->conn->prepare("DELETE FROM ppmp_items WHERE ppmp_id = ?");
+        $delete_stmt->bind_param("i", $ppmp_id);
+        if (!$delete_stmt->execute()) {
+            throw new Exception("Failed to delete old PPMP items: " . $delete_stmt->error);
+        }
+        $delete_stmt->close();
+
+        // Reinsert new PPMP items
+        $item_stmt = $this->conn->prepare("
+            INSERT INTO ppmp_items 
+            (ppmp_id, category_id, sub_category_id, item_name, item_description, specifications, quantity, unit_of_measure, unit_cost, total_cost, quarter_needed, justification)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ");
+
+        foreach ($items as $it) {
+            $category_id = intval($it['category_id']);
+            $sub_category_id = intval($it['sub_category_id']);
+            $item_name = $it['item_name'];
+            $item_description = $it['item_description'];
+            $specifications = $it['specification'];
+            $quantity = intval($it['quantity']);
+            $unit_of_measure = $it['unit_of_measure'];
+            $unit_cost = floatval($it['unit_cost']);
+            $total_cost = floatval($it['total_cost']);
+            $quarter_needed = $it['quarter_needed'];
+            $justification = $it['justification'];
+
+            $item_stmt->bind_param(
+                "iiisssisddss",
+                $ppmp_id,
+                $category_id,
+                $sub_category_id,
+                $item_name,
+                $item_description,
+                $specifications,
+                $quantity,
+                $unit_of_measure,
+                $unit_cost,
+                $total_cost,
+                $quarter_needed,
+                $justification
+            );
+
+            if (!$item_stmt->execute()) {
+                throw new Exception("Failed to insert updated PPMP item: " . $item_stmt->error);
+            }
+        }
+
+        $item_stmt->close();
+
+        // Commit all changes
+        $this->conn->commit();
+
+        // Record activity
+        $this->recordActivityLog(
+            $user_id,
+            "Updated PPMP (#$ppmp_id) with " . count($items) . " revised items.",
+            "ppmp",
+            $ppmp_id
+        );
+
+        return true;
+
+    } catch (Exception $e) {
+        $this->conn->rollback();
+        return $e->getMessage();
+    }
+}
+
     // END PPMP FUNCTIONS **********************************************************
 
 
