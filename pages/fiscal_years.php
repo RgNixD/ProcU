@@ -1,4 +1,11 @@
-<?php require_once 'sidebar.php'; ?>
+<?php
+  require_once '../php/auth_check.php';
+  if (!($canApprovePPMP && $canViewReports && $canManageBudget)) {
+      header("Location: 404.php");
+      exit();
+  }
+  require_once 'sidebar.php';
+?>
 
 <!-- page content -->
 <div class="right_col" role="main">
@@ -56,15 +63,10 @@
           </div>
         </div>
 
-
         <!-- UPDATE MODAL -->
         <div class="modal fade" id="UpdateModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div class="modal-dialog">
             <form id="UpdateForm" autocomplete="off" enctype="multipart/form-data">
-
-              <input type="hidden" class="form-control" name="user_type" id="edit_user_type" value="Administrator"
-                required>
-
               <div class="modal-content">
                 <div class="modal-header bg-light">
                   <h5 class="modal-title" id="exampleModalLabel">Update Fiscal Year</h5>
@@ -113,10 +115,9 @@
         </div>
 
         <div class="card-box bg-white table-responsive pb-2">
-          <button data-toggle="modal" data-target="#AddNew" class="btn btn-sm btn-primary mb-3 ml-3 mt-1"><i
-              class="fa fa-plus"></i> Create FY</button>
-          <button id="delete-selected" class="btn btn-sm btn-danger mb-3 mt-1"><i class="fa fa-trash"></i>
-            Delete</button>
+          <button data-toggle="modal" data-target="#AddNew" class="btn btn-sm btn-primary mb-3 ml-3 mt-1" title="Create FY"><i
+              class="fa fa-plus"></i></button>
+          <button id="delete-selected" class="btn btn-sm btn-danger mb-3 mt-1" title="Delete FY"><i class="fa fa-trash"></i></button>
           <table id="datatable" class="table table-striped table-bordered table-hover" style="width:100%">
             <thead>
               <tr class="text-center">
@@ -142,7 +143,7 @@
                   : '<span class="badge bg-secondary p-1 rounded text-light">No</span>';
               ?>
                 <tr class="text-center">
-                  <td><input type="checkbox" class="select-record d-block m-auto" value="<?= $row['fiscal_year_id'] ?>"></td>
+                  <td><input type="checkbox" class="select-record d-block m-auto" name="record_<?= $row['fiscal_year_id'] ?>" id="record_<?= $row['fiscal_year_id'] ?>" value="<?= $row['fiscal_year_id'] ?>"></td>
                   <td><?= htmlspecialchars($row['year']); ?></td>
                   <td><?= date('M. d, Y', strtotime($row['start_date'])); ?></td>
                   <td><?= date('M. d, Y', strtotime($row['end_date'])); ?></td>
@@ -198,7 +199,6 @@
     });
 
     
-    // Populate update modal with candidate data
     $('#datatable').on('click', '.edit-fiscalyear', function () {
       const fiscal_year_id = $(this).data('fiscal-year-id');
       const year = $(this).data('year');
@@ -214,7 +214,6 @@
       $('#edit_is_current').val(is_current);
       $('#edit_status').val(status);
 
-      // Show modal
       $('#UpdateModal').modal('show');
     });
 
@@ -270,7 +269,7 @@
       }
 
       confirmMultipleDeletion(selectedIDs.length, function () {
-        deleteMultipleRecords("users", "user_id", selectedIDs, "users.php");
+        deleteMultipleRecords("fiscal_years", "fiscal_year_id", selectedIDs, "fiscal_years.php");
       });
     });
 
