@@ -1,4 +1,11 @@
-<?php require_once 'sidebar.php'; ?>
+<?php
+  require_once '../php/auth_check.php';
+  if (!($canApprovePPMP && $canViewReports && $canManageBudget)) {
+      header("Location: 404.php");
+      exit();
+  }
+  require_once 'sidebar.php';
+?>
 
 <!-- page content -->
 <div class="right_col" role="main">
@@ -32,35 +39,35 @@
                 <div class="modal-body">
                   <h6 class="mb-2">User Information</h6>
                   <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" class="form-control" name="username" id="username" placeholder="Username" required>
+                    <label for="username">Usernames <span class="text-danger">*</span> </label>
+                    <input type="text" class="form-control" name="username" id="username" placeholder="Username" autocomplete="off" required>
                   </div>
                   <div class="form-group">
-                    <label for="first_name">First name</label>
-                    <input type="text" class="form-control" name="first_name" id="first_name" placeholder="First name" required>
+                    <label for="first_name">First name <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" name="first_name" id="first_name" placeholder="First name" autocomplete="off"required>
                   </div>
                   <div class="form-group">
-                    <label for="last_name">Last name</label>
-                    <input type="text" class="form-control" name="last_name" id="last_name" placeholder="Last name" required>
+                    <label for="last_name">Last name <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" name="last_name" id="last_name" placeholder="Last name" autocomplete="off" required>
                   </div>
                   <div class="form-group">
-                    <label for="phone">Mobile number</label>
+                    <label for="phone">Mobile number <span class="text-danger">*</span></label>
                     <div class="input-group">
                       <div class="input-group-text">+63</div>
-                      <input type="tel" class="form-control" name="phone" id="phone" placeholder="9123456789" maxlength="10" required>
+                      <input type="tel" class="form-control" name="phone" id="phone" placeholder="9123456789" maxlength="10" autocomplete="off"required>
                     </div>
                   </div>
                   <div class="form-group">
-                    <label for="email">Email address</label>
-                    <input type="email" class="form-control" name="email" id="email" placeholder="Email address" required>
+                    <label for="email">Email address <span class="text-danger">*</span></label>
+                    <input type="email" class="form-control" name="email" id="email" placeholder="Email address" autocomplete="off" required>
                   </div>
                   <h6 class="mb-2 mt-4">Access Control</h6>
                   <div class="form-group">
-                    <label for="access_name">Access Role</label>
+                    <label for="access_name">Access Role <span class="text-danger">*</span></label>
                     <select class="form-control" name="access_name" id="access_name" required>
                       <option value="" disabled selected>Select access level</option>
                       <option value="Procurement Head">Procurement Head</option>
-                      <option value="Sectors and Deans">Sectors and Deans</option>
+                      <option value="Sectors">Sectors</option>
                       <option value="Budget Office">Budget Office</option>
                     </select>
                   </div>
@@ -82,10 +89,6 @@
         <div class="modal fade" id="UpdateModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div class="modal-dialog">
             <form id="UpdateForm" autocomplete="off" enctype="multipart/form-data">
-
-              <input type="hidden" class="form-control" name="user_type" id="edit_user_type" value="Administrator"
-                required>
-
               <div class="modal-content">
                 <div class="modal-header bg-light">
                   <h5 class="modal-title" id="exampleModalLabel">Update User Account</h5>
@@ -97,35 +100,35 @@
                   <input type="hidden" class="form-control" name="user_id" id="edit_user_id" required>
                   <h6 class="mb-2">User Information</h6>
                   <div class="form-group">
-                    <label for="edit_username">Username</label>
-                    <input type="text" class="form-control" name="username" id="edit_username" placeholder="Username" required>
+                    <label for="edit_username">Username <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" name="username" id="edit_username" placeholder="Username" autocomplete="off" required>
                   </div>
                   <div class="form-group">
-                    <label for="edit_first_name">First name</label>
-                    <input type="text" class="form-control" name="first_name" id="edit_first_name" placeholder="First name" required>
+                    <label for="edit_first_name">First name <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" name="first_name" id="edit_first_name" placeholder="First name" autocomplete="off" required>
                   </div>
                   <div class="form-group">
-                    <label for="edit_last_name">Last name</label>
-                    <input type="text" class="form-control" name="last_name" id="edit_last_name" placeholder="Last name" required>
+                    <label for="edit_last_name">Last name <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" name="last_name" id="edit_last_name" placeholder="Last name" autocomplete="off" required>
                   </div>
                   <div class="form-group">
-                    <label for="edit_phone">Mobile number</label>
+                    <label for="edit_phone">Mobile number <span class="text-danger">*</span></label>
                     <div class="input-group">
                       <div class="input-group-text">+63</div>
-                      <input type="tel" class="form-control" name="phone" id="edit_phone" placeholder="9123456789" maxlength="10" required>
+                      <input type="tel" class="form-control" name="phone" id="edit_phone" placeholder="9123456789" maxlength="10" autocomplete="off" required>
                     </div>
                   </div>
                   <div class="form-group">
-                    <label for="edit_email">Email address</label>
-                    <input type="email" class="form-control" name="email" id="edit_email" placeholder="Email address" required>
+                    <label for="edit_email">Email address <span class="text-danger">*</span></label>
+                    <input type="email" class="form-control" name="email" id="edit_email" placeholder="Email address" autocomplete="off" required>
                   </div>
                   <h6 class="mb-2 mt-4">Access Control</h6>
                   <div class="form-group">
-                    <label for="edit_access_name">Access Role</label>
+                    <label for="edit_access_name">Access Role <span class="text-danger">*</span></label>
                     <select class="form-control" name="access_name" id="edit_access_name" required>
                       <option value="" disabled selected>Select access level</option>
                       <option value="Procurement Head">Procurement Head</option>
-                      <option value="Sectors and Deans">Sectors and Deans</option>
+                      <option value="Sectors">Sectors</option>
                       <option value="Budget Office">Budget Office</option>
                     </select>
                   </div>
@@ -142,10 +145,9 @@
         </div>
 
         <div class="card-box bg-white table-responsive pb-2">
-          <button data-toggle="modal" data-target="#AddNew" class="btn btn-sm btn-primary mb-3 ml-3 mt-1"><i
-              class="fa fa-plus"></i> Create User</button>
-          <button id="delete-selected" class="btn btn-sm btn-danger mb-3 mt-1"><i class="fa fa-trash"></i>
-            Delete</button>
+          <button data-toggle="modal" data-target="#AddNew" class="btn btn-sm btn-primary mb-3 ml-3 mt-1" title="Create User"><i
+              class="fa fa-plus"></i></button>
+          <button id="delete-selected" class="btn btn-sm btn-danger mb-3 mt-1" title="Delete User"><i class="fa fa-trash"></i></button>
           <table id="datatable" class="table table-striped table-bordered table-hover" style="width:100%">
             <thead>
               <tr>
@@ -166,7 +168,7 @@
               while ($row = $users->fetch_assoc()) {
               ?>
                 <tr>
-                  <td><input type="checkbox" class="select-record d-block m-auto" value="<?= $row['user_id'] ?>"></td>
+                  <td><input type="checkbox" class="select-record d-block m-auto" name="record_<?= $row['user_id'] ?>" id="record_<?= $row['user_id'] ?>" value="<?= $row['user_id'] ?>"></td>
                   <td>
                     <img src="../assets/img/user-profiles/<?= htmlspecialchars($row['profile'] ?: 'avatar.png'); ?>"
                         alt="" width="35" height="35" class="img-circle d-block m-auto">
@@ -229,7 +231,6 @@
       });
     });
 
-    // Populate update modal with candidate data
     $('#datatable').on('click', '.edit-user', function () {
       const userID = $(this).data('user-id');
       const username = $(this).data('username');
@@ -239,7 +240,6 @@
       const email = $(this).data('email');
       const accessName = $(this).data('access_name');
 
-      // Set values in the modal fields
       $('#edit_user_id').val(userID);
       $('#edit_username').val(username);
       $('#edit_first_name').val(firstName);
@@ -248,7 +248,6 @@
       $('#edit_email').val(email);
       $('#edit_access_name').val(accessName);
 
-      // Show modal
       $('#UpdateModal').modal('show');
     });
 
