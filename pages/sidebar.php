@@ -30,31 +30,21 @@
 
   $fullName = htmlspecialchars(trim($user['first_name'] . ' ' . $user['last_name']));
 
-  // Determine role name based on permissions
-  $badgeClass = ($permissions['can_manage_budget'] || $permissions['can_approve_ppmp']) ? "badge-primary" : "badge-secondary";
-
   $canViewReports = $permissions['can_view_reports'] == 1;
   $canCreatePPMP  = $permissions['can_create_ppmp'] == 1;
   $canApprovePPMP = $permissions['can_approve_ppmp'] == 1;
   $canManageBudget= $permissions['can_manage_budget'] == 1;
 
   $accessTypeName = "System User";
-
-  if ($canApprovePPMP && $canManageBudget) {
-      if ($canCreatePPMP) {
-          $accessTypeName = "Administrator (Full Access)";
-      } else {
-          $accessTypeName = "Senior Management";
-      }
-  } elseif ($canApprovePPMP && $canViewReports) {
+  $remainingBudget = 0;
+  if ($canApprovePPMP && $canViewReports && $canManageBudget) {
       $accessTypeName = "Procurement Head";
   } elseif ($canManageBudget) {
       $accessTypeName = "Budget Officer";
   } elseif ($canCreatePPMP) {
-      $accessTypeName = "College Dean";
+      $accessTypeName = "Sectors";
+      $remainingBudget = $db->getRemainingBudgetByUser($userId);
   }
-  
-
   require_once 'header.php';
 ?>
 <div class="col-md-3 left_col menu_fixed"><!-- FOR FIXED SIDEBAR -->
@@ -91,7 +81,7 @@
             <a href="index.php" class="text-dark"><i class="fa fa-tachometer"></i> DASHBOARD</a>
           </li>
 
-          <?php if ($canApprovePPMP && $canViewReports): ?>
+          <?php if ($canApprovePPMP && $canViewReports && $canManageBudget): ?>
             <li class="<?= ($current_page == 'users.php') ? 'active' : '' ?>">
               <a href="users.php" class="text-dark"><i class="fa fa-users"></i> USERS</a>
             </li>
@@ -100,16 +90,23 @@
               <a href="offices.php" class="text-dark"><i class="fa fa-building"></i> OFFICE</a>
             </li>
 
-
             <li class="<?= ($current_page == 'categories.php') ? 'active' : '' ?>">
               <a href="categories.php" class="text-dark"><i class="fa fa-tags"></i> CATEGORIES</a>
+            </li>
+
+            <li class="<?= ($current_page == 'sub-categories.php') ? 'active' : '' ?>">
+              <a href="sub-categories.php" class="text-dark"><i class="fa fa-tags"></i> SUB-CATEGORIES</a>
             </li>
 
             <li class="<?= ($current_page == 'fiscal_years.php') ? 'active' : '' ?>">
               <a href="fiscal_years.php" class="text-dark"><i class="fa fa-calendar"></i> FISCAL YEARS</a>
             </li>
 
-            <li class="<?= ($current_page == 'admin.php') ? 'active' : '' ?>">
+            <li class="<?= ($current_page == 'budget_allocations.php') ? 'active' : '' ?>">
+              <a href="budget_allocations.php" class="text-dark"><i class="fa fa-calculator"></i> BUDGET ALLOCATIONS</a>
+            </li>
+
+            <li class="<?= ($current_page == 'submissions.php') ? 'active' : '' ?>">
               <a href="#" class="text-dark"><i class="fa fa-file"></i> REVIEW SUBMISSIONS</a>
             </li>
 
@@ -117,12 +114,10 @@
               <a href="#" class="text-dark"><i class="fa fa-check"></i> CONSOLIDATE PPMP</a>
             </li>
 
-            <li class="<?= ($current_page == 'reports.php') ? 'active' : '' ?>">
+            <li class="<?= ($current_page == 'revision.php') ? 'active' : '' ?>">
               <a href="#" class="text-dark"><i class="fa fa-file"></i> REVISE APP</a>
             </li>
           <?php endif; ?>
-
-          
 
           <?php if ($canCreatePPMP): ?>
             <li class="<?= ($current_page == 'ppmp.php') ? 'active' : '' ?>">
@@ -132,22 +127,26 @@
               <a href="create_ppmp.php" class="text-dark"><i class="fa fa-plus"></i> CREATE PPMP</a>
             </li>
             <li class="<?= ($current_page == 'notifications.php') ? 'active' : '' ?>">
-              <a href="notifications.php" class="text-dark"><i class="fa fa-bell"></i> NOTIFICATIONS</a>
+              <a href="#" class="text-dark"><i class="fa fa-bell"></i> NOTIFICATIONS</a>
             </li>
           <?php endif; ?>
 
           <?php if ($canManageBudget): ?>
-            <li class="<?= ($current_page == 'budget_allocations.php') ? 'active' : '' ?>">
-              <a href="budget_allocations.php" class="text-dark"><i class="fa fa-calculator"></i> BUDGET ALLOCATIONS</a>
-            </li>
-            <li class="<?= ($current_page == 'adjustment_logs.php') ? 'active' : '' ?>">
-              <a href="adjustment_logs.php" class="text-dark"><i class="fa fa-history"></i> ADJUSTMENT LOGS</a>
-            </li>
+            <?php if (!$canApprovePPMP && !$canViewReports): ?>
+              <li class="<?= ($current_page == 'budget_allocations.php') ? 'active' : '' ?>">
+                <a href="budget_allocations.php" class="text-dark"><i class="fa fa-calculator"></i> BUDGET ALLOCATIONS</a>
+              </li>
+            
+              <li class="<?= ($current_page == 'adjustment_logs.php') ? 'active' : '' ?>">
+                <a href="#" class="text-dark"><i class="fa fa-history"></i> ADJUSTMENT LOGS</a>
+              </li>
+            <?php endif; ?>
           <?php endif; ?>
+
           
           <?php if (!$canCreatePPMP): ?>
             <li class="<?= ($current_page == 'reports.php') ? 'active' : '' ?>">
-              <a href="reports.php" class="text-dark"><i class="fa fa-file"></i> REPORTS</a>
+              <a href="#" class="text-dark"><i class="fa fa-file"></i> REPORTS</a>
             </li>
           <?php endif; ?>
            
