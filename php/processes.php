@@ -320,6 +320,63 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             // END SUB-CATEGORY PROCESSES **********************************************************
 
 
+            // ITEM NAME PROCESSES **********************************************************
+            case "AddItemNameForm":
+
+                $sub_category_id = $_POST['sub_category_id'] ?? '';
+                $item_name = $_POST['item_name'] ?? '';
+
+                $result = $db->AddItemNameForm($sub_category_id, $item_name, $operator_ID);
+
+                if ($result === true) {
+                    $response = ['success' => true, 'message' => "Item name successfully added"];
+                } elseif (is_string($result)) {
+                    $response = ['message' => $result];
+                } else {
+                    $response = ['message' => "Error adding item name"];
+                }
+                break;
+
+            case "UpdateItemNameForm":
+
+                $item_name_id = $_POST['item_name_id'] ?? '';
+                $sub_category_id = $_POST['sub_category_id'] ?? '';
+                $item_name = $_POST['item_name'] ?? '';
+
+                $result = $db->UpdateItemNameForm($item_name_id, $sub_category_id, $item_name, $operator_ID);
+
+                if ($result === true) {
+                    $response = ['success' => true, 'message' => "Item name successfully updated"];
+                } elseif (is_string($result)) {
+                    $response = ['message' => $result];
+                } else {
+                    $response = ['message' => "Error updating item name"];
+                }
+                break;
+            
+            case "GetItemNamesBySubCategory":
+                $sub_category_id = $_POST['sub_category_id'] ?? 0;
+
+                if (!$sub_category_id) {
+                    $response = ['success' => false, 'message' => 'Invalid subcategory ID.'];
+                    break;
+                }
+
+                $result = $db->getItemNamesBySubCategory($sub_category_id);
+                $item_names = [];
+                while ($row = $result->fetch_assoc()) {
+                    $item_names[] = ['item_name_id' => $row['item_name_id'], 'item_name' => $row['item_name']];
+                }
+
+                if (!empty($item_names)) {
+                    $response = ['success' => true, 'data' => $item_names];
+                } else {
+                    $response = ['success' => false, 'message' => 'No item names found for this subcategory.'];
+                }
+                break;
+            // END ITEM NAME PROCESSES **********************************************************
+
+
             // FISCAL YEAR PROCESSES**********************************************************
             case "AddFiscalYearForm":
 
@@ -446,7 +503,34 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     break;
                 }
 
-                $result = $db->AddPPMPForm($user_id, $ppmp_items);
+                $upload_dir = '../assets/ppmp_attachments/';
+                $uploaded_files_map = [];
+                
+                $allowed_types = ['image/jpeg', 'image/png', 'image/gif', 'application/pdf'];
+                $max_file_size = 5000000;
+
+                if (!is_dir($upload_dir)) {
+                    mkdir($upload_dir, 0777, true);
+                }
+
+                foreach ($_FILES as $input_name => $file) {
+                    if (preg_match('/^file_(\d+)_(\d+)$/', $input_name, $matches)) {
+                        $temp_item_id = $matches[1];
+                        
+                        
+                        $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+                        $unique_filename = time() . '_' . uniqid() . '.' . $extension;
+                        
+                        $destination = $upload_dir . $unique_filename;
+
+                        if (move_uploaded_file($file['tmp_name'], $destination)) {
+                            $uploaded_files_map[$temp_item_id][] = $unique_filename; 
+                        } else {
+                        }
+                    }
+                }
+
+                $result = $db->AddPPMPForm($user_id, $ppmp_items, $uploaded_files_map);
 
                 if ($result === true) {
                     $response = ['success' => true, 'message' => 'PPMP and items successfully added.'];
@@ -464,18 +548,41 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $ppmp_items = json_decode($ppmp_items, true);
 
                 if (empty($ppmp_id) || empty($user_id) || empty($ppmp_items)) {
-                    $response = ['message' => 'Incomplete data provided. Please ensure all required fields (PPMP ID, User ID, and Items) are filled in before proceeding.'];
+                    $response = ['success' => false, 'message' => 'Incomplete data provided. Please ensure all required fields (PPMP ID, User ID, and Items) are filled in before proceeding.'];
                     break;
                 }
 
-                $result = $db->UpdatePPMPForm($ppmp_id, $user_id, $ppmp_items);
+                $upload_dir = '../assets/ppmp_attachments/';
+                $uploaded_files_map = [];
+                
+                if (!is_dir($upload_dir)) {
+                    mkdir($upload_dir, 0777, true);
+                }
+
+                foreach ($_FILES as $input_name => $file) {
+
+                    if (preg_match('/^file_(\d+)_(\d+)$/', $input_name, $matches)) {
+                        $temp_item_id = $matches[1];
+                        
+                        $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+                        $unique_filename = time() . '_' . uniqid() . '.' . $extension;
+                        $destination = $upload_dir . $unique_filename;
+
+                        if (move_uploaded_file($file['tmp_name'], $destination)) {
+                            $uploaded_files_map[$temp_item_id][] = $unique_filename; 
+                        } else {
+                        }
+                    }
+                }
+                
+                $result = $db->UpdatePPMPForm($ppmp_id, $user_id, $ppmp_items, $uploaded_files_map);
 
                 if ($result === true) {
-                    $response = ['success' => true, 'message' => 'PPMP and items successfully updated.'];
+                    $response = ['success' => true, 'message' => 'PPMP successfully updated.'];
                 } elseif (is_string($result)) {
-                    $response = ['message' => $result];
+                    $response = ['success' => false, 'message' => $result];
                 } else {
-                    $response = ['message' => 'Error updating PPMP.'];
+                    $response = ['success' => false, 'message' => 'Error updating PPMP.'];
                 }
                 break;
 
@@ -488,13 +595,37 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 }
 
                 $result = $db->getPPMPItemsById($ppmp_id);
+                
 
                 $items = [];
                 while ($row = $result->fetch_assoc()) {
                     $items[] = $row;
                 }
 
-                $response = ['success' => true, 'data' => $items];
+                $headerData = $db->getPPMPHeaderDetails($ppmp_id);
+
+                $response = [
+                    'success' => true, 
+                    'items' => $items,
+                    'header' => $headerData 
+                ];
+                break;
+                
+            case "DeleteItem":
+                $item_id = $_POST['item_id'] ?? 0; 
+
+                if (empty($item_id)) {
+                    $response = ['success' => false, 'message' => 'Missing item ID for deletion.'];
+                    break;
+                }
+
+                $success = $db->deletePPMPItem($item_id);
+
+                if ($success) {
+                    $response = ['success' => true, 'message' => 'PPMP item deleted successfully.'];
+                } else {
+                    $response = ['success' => false, 'message' => 'Failed to delete item. It may not exist or a database error occurred.'];
+                }
                 break;
             // END PPMP PROCESSES**********************************************************
 

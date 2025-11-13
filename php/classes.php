@@ -614,6 +614,20 @@ class db_class extends db_connect
             }
         }
 
+        if ($access_name === 'Budget Office') {
+            $count = 0;
+            $check_stmt = $this->conn->prepare("SELECT COUNT(*) FROM user_access WHERE access_name = 'Budget Office' AND is_active = 1 ");
+            $check_stmt->execute();
+            $count = 0;
+            $check_stmt->bind_result($count);
+            $check_stmt->fetch();
+            $check_stmt->close();
+
+            if ($count > 0) {
+                return "Only 1 Budget Office role is allowed.";
+            }
+        }
+
         $defaultPassword = password_hash("PROC-123", PASSWORD_DEFAULT);
         $defaultProfile = 'avatar.png';
 
@@ -740,6 +754,26 @@ class db_class extends db_connect
 
             if ($count > 0) {
                 return "A user with the role 'Procurement Head' already exists.";
+            }
+        }
+
+        if ($access_name === 'Budget Office') {
+            $count = 0;
+            $check_stmt = $this->conn->prepare("
+                SELECT COUNT(*) 
+                FROM user_access 
+                WHERE access_name = 'Budget Office' 
+                AND is_active = 1 
+                AND user_id != ?
+            ");
+            $check_stmt->bind_param("i", $user_id);
+            $check_stmt->execute();
+            $check_stmt->bind_result($count);
+            $check_stmt->fetch();
+            $check_stmt->close();
+
+            if ($count > 0) {
+                return "Only 1 Budget Office role is allowed.";
             }
         }
 
@@ -1045,6 +1079,151 @@ class db_class extends db_connect
         return true;
     }
     // END SUB CATEGORY FUNCTIONS **********************************************************
+
+
+    // ITEM NAME FUNCTIONS **********************************************************
+    public function getAllItemNames($item_id = null)
+    {
+        $sql = "
+            SELECT 
+                i.*, 
+                sc.sub_category_id, 
+                sc.sub_cat_name, 
+                c.category_name
+            FROM 
+                item_names i
+            INNER JOIN 
+                sub_categories sc ON i.sub_category_id = sc.sub_category_id
+            INNER JOIN 
+                item_categories c ON sc.category_id = c.category_id
+        ";
+
+        if ($item_id !== null) {
+            $sql .= " WHERE i.item_id = ?";
+        }
+
+        $sql .= " ORDER BY c.category_name, sc.sub_cat_name, i.item_name";
+
+        $stmt = $this->conn->prepare($sql);
+
+        if ($item_id !== null) {
+            $stmt->bind_param("i", $item_id);
+        }
+
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        return $result;
+    }
+
+    public function getItemNamesBySubCategory(int $sub_category_id)
+    {
+        $sql = "
+            SELECT 
+                i.*, 
+                sc.sub_cat_name
+            FROM 
+                item_names i
+            INNER JOIN 
+                sub_categories sc ON i.sub_category_id = sc.sub_category_id
+            WHERE 
+                i.sub_category_id = ?
+            ORDER BY 
+                i.item_name
+        ";
+        $stmt = $this->conn->prepare($sql);
+        
+        $stmt->bind_param("i", $sub_category_id);
+        
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result;
+    }
+
+    public function AddItemNameForm($sub_category_id, $item_name, $operator_ID) {
+        $count = 0;
+        $check_stmt = $this->conn->prepare("
+            SELECT COUNT(*) 
+            FROM item_names 
+            WHERE item_name = ? AND sub_category_id = ?
+        ");
+        $check_stmt->bind_param("si", $item_name, $sub_category_id);
+        $check_stmt->execute();
+        $check_stmt->bind_result($count);
+        $check_stmt->fetch();
+        $check_stmt->close();
+
+        if ($count > 0) {
+            return "Item name already exists for this sub-category.";
+        }
+
+        $stmt = $this->conn->prepare("
+            INSERT INTO item_names (sub_category_id, item_name)
+            VALUES (?, ?)
+        ");
+        $stmt->bind_param("is", $sub_category_id, $item_name);
+
+        if (!$stmt->execute()) {
+            $error = $stmt->error;
+            $stmt->close();
+            return "Failed to insert item name: " . $error;
+        }
+
+        $item_id = $stmt->insert_id;
+        $stmt->close();
+
+        $this->recordActivityLog(
+            $operator_ID,
+            "Added new item name: $item_name (Sub-category ID: $sub_category_id)",
+            "item_names",
+            $item_id
+        );
+
+        return true;
+    }
+
+    public function UpdateItemNameForm($item_name_id, $sub_category_id, $item_name, $operator_ID) {
+        $count = 0;
+        $check_stmt = $this->conn->prepare("
+            SELECT COUNT(*) 
+            FROM item_names 
+            WHERE item_name = ? AND sub_category_id = ? AND item_name_id != ?
+        ");
+        $check_stmt->bind_param("sii", $item_name, $sub_category_id, $item_name_id);
+        $check_stmt->execute();
+        $check_stmt->bind_result($count);
+        $check_stmt->fetch();
+        $check_stmt->close();
+
+        if ($count > 0) {
+            return "Item name already exists for this sub-category.";
+        }
+
+        $stmt = $this->conn->prepare("
+            UPDATE item_names 
+            SET sub_category_id = ?, item_name = ?
+            WHERE item_name_id = ?
+        ");
+        $stmt->bind_param("isi", $sub_category_id, $item_name, $item_name_id);
+
+        if (!$stmt->execute()) {
+            $error = $stmt->error;
+            $stmt->close();
+            return "Failed to update item name: " . $error;
+        }
+
+        $stmt->close();
+
+        $this->recordActivityLog(
+            $operator_ID,
+            "Updated item name: $item_name (Sub-category ID: $sub_category_id)",
+            "item_names",
+            $item_name_id
+        );
+
+        return true;
+    }
+    // END ITEM NAME FUNCTIONS **********************************************************
 
 
     // FISCAL YEAR FUNCTIONS **********************************************************
@@ -1491,27 +1670,22 @@ class db_class extends db_connect
 
 
     // PPMP FUNCTIONS **********************************************************
-    public function getAllPPMPRecords($userId = null)
+    public function getAllPPMPRecords($ppmp_id = null)
     {
         $sql = "
             SELECT 
                 p.ppmp_id,
                 p.ppmp_code,
                 p.status,
-                p.submission_date,
                 p.approval_date,
                 p.total_amount,
-                p.remarks,
                 p.created_at,
                 
-                -- Office info
                 o.office_name,
                 o.office_code,
                 
-                -- Fiscal year info
                 fy.year AS fiscal_year,
                 
-                -- Submitted by (User)
                 u.first_name,
                 u.last_name,
                 u.email,
@@ -1523,13 +1697,74 @@ class db_class extends db_connect
             INNER JOIN users u ON p.submitted_by = u.user_id
         ";
 
-        if (!empty($userId)) {
-            $sql .= " WHERE p.submitted_by = ?";
+        if (!empty($ppmp_id)) {
+            $sql .= " WHERE p.ppmp_id = ?";
         }
 
         $sql .= " ORDER BY p.created_at DESC";
 
-        // Prepare statement
+        $stmt = $this->conn->prepare($sql);
+        if (!$stmt) {
+            throw new Exception("Database error: " . $this->conn->error);
+        }
+
+        if (!empty($ppmp_id)) {
+            $stmt->bind_param("i", $ppmp_id);
+        }
+
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if (!$result) {
+            throw new Exception("Query execution failed: " . $this->conn->error);
+        }
+
+        return $result;
+    }
+
+    public function getPPMPHeaderDetails($ppmp_id)
+    {
+        $result = $this->getAllPPMPRecords($ppmp_id);
+
+        if ($result && $result->num_rows > 0) {
+            $data = $result->fetch_assoc();
+            return $data;
+        }
+        
+        return null;
+    }
+
+    public function getAllPPMPRecordsBySector($userId = null)
+    {
+        $sql = "
+            SELECT 
+                p.ppmp_id,
+                p.ppmp_code,
+                p.status,
+                p.total_amount,
+                p.approval_date,
+                p.created_at,
+                
+                o.office_name,
+                
+                fy.year AS fiscal_year,
+                
+                u.first_name,
+                u.last_name
+                
+            FROM ppmp p
+            INNER JOIN offices o ON p.office_id = o.office_id
+            INNER JOIN fiscal_years fy ON p.fiscal_year_id = fy.fiscal_year_id
+            INNER JOIN users u ON p.submitted_by = u.user_id
+        ";
+
+        if (!empty($userId)) {
+            $sql .= " WHERE p.submitted_by = ?"; 
+        }
+        
+
+        $sql .= " ORDER BY p.created_at DESC";
+
         $stmt = $this->conn->prepare($sql);
         if (!$stmt) {
             throw new Exception("Database error: " . $this->conn->error);
@@ -1552,30 +1787,38 @@ class db_class extends db_connect
     public function getPPMPItemsById($ppmp_id)
     {
         $sql = "
-            SELECT 
-                i.item_id,
-                i.category_id,
-                i.sub_category_id,
-                i.item_name,
-                i.item_description,
-                i.specifications,
-                i.quantity,
-                i.unit_of_measure,
-                i.unit_cost,
-                i.total_cost,
-                i.quarter_needed,
-                i.procurement_method,
-                i.justification,
-                i.created_at,
-                
-                c.category_name,
-                s.sub_cat_name
-                
-            FROM ppmp_items i
-            INNER JOIN item_categories c ON i.category_id = c.category_id
-            LEFT JOIN sub_categories s ON i.sub_category_id = s.sub_category_id
-            WHERE i.ppmp_id = ?
-            ORDER BY i.created_at DESC
+                SELECT 
+                    i.item_id,
+                    i.category_id,
+                    i.sub_category_id,
+                    i.item_name_id,
+                    inames.item_name,
+                    i.item_description,
+                    i.specifications,
+                    i.mode_of_procurement,
+                    i.quantity,
+                    i.estimated_budget AS unit_cost,  
+                    i.total_cost,
+                    i.file_attachment,
+
+                    i.procurement_start_date,
+                    
+                    i.procurement_method,
+                    i.remarks,
+
+                    i.bidding_date,
+                    i.contract_signing_date,
+                    i.source_of_funds,
+                    i.pre_procurement_conference,
+                    
+                    c.category_name,
+                    s.sub_cat_name
+                    
+                FROM ppmp_items i
+                INNER JOIN item_categories c ON i.category_id = c.category_id
+                LEFT JOIN sub_categories s ON i.sub_category_id = s.sub_category_id
+                LEFT JOIN item_names inames ON i.item_name_id = inames.item_name_id
+                WHERE i.ppmp_id = ?
         ";
 
         $stmt = $this->conn->prepare($sql);
@@ -1586,7 +1829,7 @@ class db_class extends db_connect
         return $result;
     }
 
-    public function AddPPMPForm($user_id, $items)
+    public function AddPPMPForm($user_id, $items, $uploaded_files_map = [])
     {
         $this->conn->begin_transaction();
 
@@ -1642,10 +1885,10 @@ class db_class extends db_connect
 
             $ppmp_code = "PPMP-" . date("Y") . "-" . strtoupper(uniqid());
             $stmt = $this->conn->prepare("
-                INSERT INTO ppmp (office_id, fiscal_year_id, ppmp_code, submission_date, total_amount, submitted_by)
-                VALUES (?, ?, ?, NOW(), ?, ?)
+                INSERT INTO ppmp (office_id, fiscal_year_id, ppmp_code, total_amount, submitted_by)
+                VALUES (?, ?, ?, ?, ?)
             ");
-
+            
             $stmt->bind_param("iisdi", $office_id, $fiscal_year_id, $ppmp_code, $total_amount, $user_id);
 
             if (!$stmt->execute()) {
@@ -1656,42 +1899,66 @@ class db_class extends db_connect
             $stmt->close();
 
             $item_stmt = $this->conn->prepare("
-                INSERT INTO ppmp_items (ppmp_id, category_id, sub_category_id, item_name, item_description, specifications, quantity, unit_of_measure, unit_cost, total_cost, quarter_needed, justification)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO ppmp_items (
+                    ppmp_id, category_id, sub_category_id, item_name_id, item_description, specifications, quantity, 
+                    mode_of_procurement, pre_procurement_conference, procurement_start_date, bidding_date, 
+                    contract_signing_date, source_of_funds, estimated_budget, total_cost, remarks, file_attachment
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ");
 
+            $temp_item_id = 0;
+
             foreach ($items as $it) {
-                $category_id = intval($it['category_id']);
-                $sub_category_id = intval($it['sub_category_id']);
-                $item_name = $it['item_name'];
-                $item_description = $it['item_description'];
-                $specifications = $it['specification'];
+        
+                $item_files = $uploaded_files_map[$temp_item_id] ?? [];
+                
+                $file_attachment_string = !empty($item_files) ? implode(',', $item_files) : NULL;
+                $category_id = intval($it['category_id'] ?? 0); 
+                $sub_category_id = intval($it['sub_category_id'] ?? 0); 
+                $item_name_id = intval($it['item_name_id']);
+
+                $item_description = $it['item_description'] ?? '';
+                $specifications = $it['specifications'];
                 $quantity = intval($it['quantity']);
-                $unit_of_measure = $it['unit_of_measure'];
-                $unit_cost = floatval($it['unit_cost']);
+                $mode_of_procurement = $it['mode_of_procurement'];
+                $pre_procurement_conference = $it['pre_procurement_conference'];
+                
+                $procurement_start_date = $it['procurement_start_date'] ?? '0000-00-00'; 
+                $bidding_date = $it['bidding_date'] ?? '0000-00-00';
+                $contract_signing_date = $it['contract_signing_date'] ?? '0000-00-00';
+                
+                $source_of_funds = $it['source_of_funds'];
+                $estimated_budget = floatval($it['estimated_budget']); 
                 $total_cost = floatval($it['total_cost']);
-                $quarter_needed = $it['quarter_needed'];
-                $justification = $it['justification'];
+                $remarks = $it['remarks'];
 
                 $item_stmt->bind_param(
-                    "iiisssisddss",
+                    "iiiississssssddss", 
                     $ppmp_id,
                     $category_id,
                     $sub_category_id,
-                    $item_name,
+                    $item_name_id,
                     $item_description,
                     $specifications,
                     $quantity,
-                    $unit_of_measure,
-                    $unit_cost,
-                    $total_cost,
-                    $quarter_needed,
-                    $justification
+                    $mode_of_procurement,
+                    $pre_procurement_conference,
+                    $procurement_start_date,
+                    $bidding_date,
+                    $contract_signing_date,
+                    $source_of_funds,
+                    $estimated_budget,
+                    $total_cost, 
+                    $remarks,
+                    $file_attachment_string
                 );
 
                 if (!$item_stmt->execute()) {
                     throw new Exception("Failed to insert PPMP item: " . $item_stmt->error);
                 }
+                
+                $temp_item_id++;
             }
 
             $item_stmt->close();
@@ -1712,131 +1979,187 @@ class db_class extends db_connect
         }
     }
 
-    public function UpdatePPMPForm($ppmp_id, $user_id, $items)
-{
-    $this->conn->begin_transaction();
+    public function UpdatePPMPForm($ppmp_id, $user_id, $items, $uploaded_files_map = [])
+    {
+        $this->conn->begin_transaction();
 
-    try {
-        // Validate PPMP existence
-        $ppmp_stmt = $this->conn->prepare("
-            SELECT p.office_id, p.fiscal_year_id, p.total_amount, b.remaining_amount, b.status, b.allocation_id
-            FROM ppmp p
-            INNER JOIN budget_allocation b ON p.office_id = b.office_id AND p.fiscal_year_id = b.fiscal_year_id
-            WHERE p.ppmp_id = ?
-            ORDER BY b.allocation_id DESC
-            LIMIT 1
-        ");
-        $ppmp_stmt->bind_param("i", $ppmp_id);
-        $ppmp_stmt->execute();
-        $ppmp_stmt->store_result();
+        try {
 
-        if ($ppmp_stmt->num_rows === 0) {
-            throw new Exception("PPMP record not found for update.");
-        }
+            $ppmp_stmt = $this->conn->prepare("
+                SELECT p.office_id, p.fiscal_year_id, p.total_amount, b.remaining_amount, b.status, b.allocation_id
+                FROM ppmp p
+                INNER JOIN budget_allocation b ON p.office_id = b.office_id AND p.fiscal_year_id = b.fiscal_year_id
+                WHERE p.ppmp_id = ?
+                ORDER BY b.allocation_id DESC
+                LIMIT 1
+            ");
+            $ppmp_stmt->bind_param("i", $ppmp_id);
+            $ppmp_stmt->execute();
+            $ppmp_stmt->store_result();
 
-        $office_id = $fiscal_year_id = $current_total = $remaining_amount = $status = $allocation_id = null;
-        $ppmp_stmt->bind_result($office_id, $fiscal_year_id, $current_total, $remaining_amount, $status, $allocation_id);
-        $ppmp_stmt->fetch();
-        $ppmp_stmt->close();
+            if ($ppmp_stmt->num_rows === 0) {
+                throw new Exception("PPMP record not found for update.");
+            }
 
-        if (strtolower($status) !== 'approved') {
-            throw new Exception("Budget allocation exists but is not approved yet (Status: " . ucfirst($status) . ").");
-        }
+            $office_id = $fiscal_year_id = $current_total = $remaining_amount = $status = $allocation_id = null;
+            $ppmp_stmt->bind_result($office_id, $fiscal_year_id, $current_total, $remaining_amount, $status, $allocation_id);
+            $ppmp_stmt->fetch();
+            $ppmp_stmt->close();
 
-        // Recalculate new total
-        $new_total = 0;
-        foreach ($items as $it) {
-            $new_total += floatval($it['total_cost']);
-        }
+            if (strtolower($status) !== 'approved') {
+                throw new Exception("Budget allocation exists but is not approved yet (Status: " . ucfirst($status) . ").");
+            }
+            
+            $new_total = 0;
+            foreach ($items as $it) {
+                $new_total += floatval($it['total_cost']);
+            }
 
-        if ($new_total > $remaining_amount + $current_total) {
-            $remaining_display = number_format((float)$remaining_amount + (float)$current_total, 2);
-            throw new Exception("Insufficient budget. Available budget (including old PPMP total) is ₱" . $remaining_display .
-                ", but new total is ₱" . number_format($new_total, 2) . ".");
-        }
+            if ($new_total > $remaining_amount + $current_total) {
+                $available_display = number_format((float)$remaining_amount + (float)$current_total, 2);
+                throw new Exception("Insufficient budget. Available budget is ₱" . $available_display .
+                    ", but new PPMP total is ₱" . number_format($new_total, 2) . ".");
+            }
 
-        // Update PPMP total and date
-        $update_stmt = $this->conn->prepare("
-            UPDATE ppmp 
-            SET total_amount = ? 
-            WHERE submitted_by = ? AND ppmp_id = ?
-        ");
-        $update_stmt->bind_param("dii", $new_total, $user_id, $ppmp_id);
-        if (!$update_stmt->execute()) {
-            throw new Exception("Failed to update PPMP record: " . $update_stmt->error);
-        }
-        $update_stmt->close();
+            $update_stmt = $this->conn->prepare("
+                UPDATE ppmp 
+                SET total_amount = ?
+                WHERE submitted_by = ? AND ppmp_id = ?
+            ");
+            $update_stmt->bind_param("dii", $new_total, $user_id, $ppmp_id);
+            if (!$update_stmt->execute()) {
+                throw new Exception("Failed to update PPMP record: " . $update_stmt->error);
+            }
+            $update_stmt->close();
 
-        // Delete old PPMP items first
-        $delete_stmt = $this->conn->prepare("DELETE FROM ppmp_items WHERE ppmp_id = ?");
-        $delete_stmt->bind_param("i", $ppmp_id);
-        if (!$delete_stmt->execute()) {
-            throw new Exception("Failed to delete old PPMP items: " . $delete_stmt->error);
-        }
-        $delete_stmt->close();
+            $delete_stmt = $this->conn->prepare("DELETE FROM ppmp_items WHERE ppmp_id = ?");
+            $delete_stmt->bind_param("i", $ppmp_id);
+            if (!$delete_stmt->execute()) {
+                throw new Exception("Failed to delete old PPMP items: " . $delete_stmt->error);
+            }
+            $delete_stmt->close();
 
-        // Reinsert new PPMP items
-        $item_stmt = $this->conn->prepare("
-            INSERT INTO ppmp_items 
-            (ppmp_id, category_id, sub_category_id, item_name, item_description, specifications, quantity, unit_of_measure, unit_cost, total_cost, quarter_needed, justification)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ");
+            $item_stmt = $this->conn->prepare("
+                INSERT INTO ppmp_items (
+                    ppmp_id, category_id, sub_category_id, item_name_id, item_description, specifications, quantity, 
+                    mode_of_procurement, pre_procurement_conference, procurement_start_date, bidding_date, 
+                    contract_signing_date, source_of_funds, estimated_budget, total_cost, remarks, file_attachment
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ");
+            
+            $temp_item_id = 0; 
 
-        foreach ($items as $it) {
-            $category_id = intval($it['category_id']);
-            $sub_category_id = intval($it['sub_category_id']);
-            $item_name = $it['item_name'];
-            $item_description = $it['item_description'];
-            $specifications = $it['specification'];
-            $quantity = intval($it['quantity']);
-            $unit_of_measure = $it['unit_of_measure'];
-            $unit_cost = floatval($it['unit_cost']);
-            $total_cost = floatval($it['total_cost']);
-            $quarter_needed = $it['quarter_needed'];
-            $justification = $it['justification'];
+            foreach ($items as $it) {
+                $file_attachment_string = ''; 
 
-            $item_stmt->bind_param(
-                "iiisssisddss",
-                $ppmp_id,
-                $category_id,
-                $sub_category_id,
-                $item_name,
-                $item_description,
-                $specifications,
-                $quantity,
-                $unit_of_measure,
-                $unit_cost,
-                $total_cost,
-                $quarter_needed,
-                $justification
+                $is_new = isset($it['is_new']) && $it['is_new'] === true; 
+
+                if ($is_new) {
+                    $item_files = $uploaded_files_map[$temp_item_id] ?? [];
+                    $file_attachment_string = !empty($item_files) ? implode(',', $item_files) : ''; 
+                    $temp_item_id++;
+                } else {
+                    $file_attachment_string = $it['file_attachment'] ?? ''; 
+                }
+
+                $category_id = intval($it['category_id'] ?? 0); 
+                $sub_category_id = intval($it['sub_category_id'] ?? 0); 
+                $item_name_id = intval($it['item_name_id']);
+
+                $item_description = $it['item_description'] ?? '';
+                $specifications = $it['specifications'] ?? '';
+                $quantity = intval($it['quantity']);
+                $mode_of_procurement = $it['mode_of_procurement'] ?? '';
+                $pre_procurement_conference = $it['pre_procurement_conference'] ?? '';
+                
+                $procurement_start_date = $it['procurement_start_date'] ?? '0000-00-00'; 
+                $bidding_date = $it['bidding_date'] ?? '0000-00-00';
+                $contract_signing_date = $it['contract_signing_date'] ?? '0000-00-00';
+                
+                $source_of_funds = $it['source_of_funds'] ?? '';
+                $estimated_budget = floatval($it['estimated_budget']); 
+                $total_cost = floatval($it['total_cost']);
+                $remarks = $it['remarks'] ?? '';
+
+                $item_stmt->bind_param(
+                    "iiiississssssddss", 
+                    $ppmp_id,
+                    $category_id,
+                    $sub_category_id,
+                    $item_name_id,
+                    $item_description,
+                    $specifications,
+                    $quantity,
+                    $mode_of_procurement,
+                    $pre_procurement_conference,
+                    $procurement_start_date,
+                    $bidding_date,
+                    $contract_signing_date,
+                    $source_of_funds,
+                    $estimated_budget,
+                    $total_cost, 
+                    $remarks,
+                    $file_attachment_string
+                );
+
+                if (!$item_stmt->execute()) {
+                    throw new Exception("Failed to insert updated PPMP item: " . $item_stmt->error);
+                }
+            }
+
+            $item_stmt->close();
+
+            $new_remaining = $remaining_amount + $current_total - $new_total;
+            $budget_update_stmt = $this->conn->prepare("
+                UPDATE budget_allocation 
+                SET remaining_amount = ? 
+                WHERE allocation_id = ?
+            ");
+            $budget_update_stmt->bind_param("di", $new_remaining, $allocation_id);
+            if (!$budget_update_stmt->execute()) {
+                throw new Exception("Failed to update remaining budget: " . $budget_update_stmt->error);
+            }
+            $budget_update_stmt->close();
+            
+            $this->conn->commit();
+
+            $this->recordActivityLog(
+                $user_id,
+                "Updated PPMP (#$ppmp_id) with " . count($items) . " total items.",
+                "ppmp",
+                $ppmp_id
             );
 
-            if (!$item_stmt->execute()) {
-                throw new Exception("Failed to insert updated PPMP item: " . $item_stmt->error);
-            }
+            return true;
+
+        } catch (Exception $e) {
+            $this->conn->rollback();
+            return $e->getMessage();
+        }
+    }
+
+    public function deletePPMPItem($item_id)
+    {
+        $sql = "DELETE FROM ppmp_items WHERE item_id = ?";
+
+        $stmt = $this->conn->prepare($sql);
+
+        if (!$stmt) {
+            error_log("Prepare failed in deletePPMPItem: " . $this->conn->error);
+            return false;
         }
 
-        $item_stmt->close();
-
-        // Commit all changes
-        $this->conn->commit();
-
-        // Record activity
-        $this->recordActivityLog(
-            $user_id,
-            "Updated PPMP (#$ppmp_id) with " . count($items) . " revised items.",
-            "ppmp",
-            $ppmp_id
-        );
-
-        return true;
-
-    } catch (Exception $e) {
-        $this->conn->rollback();
-        return $e->getMessage();
+        $stmt->bind_param("i", $item_id);
+        
+        $result = $stmt->execute();
+        
+        $success = $result && $stmt->affected_rows > 0;
+        
+        $stmt->close();
+        
+        return $success;
     }
-}
-
     // END PPMP FUNCTIONS **********************************************************
 
 

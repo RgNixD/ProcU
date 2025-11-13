@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 19, 2025 at 03:20 PM
+-- Generation Time: Nov 09, 2025 at 08:12 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.1.25
 
@@ -166,7 +166,36 @@ INSERT INTO `audit_logs` (`log_id`, `user_id`, `action`, `table_name`, `record_i
 (117, 16, 'Updated PPMP (#40) with 1 revised items.', 'ppmp', 40, '2025-10-19 21:04:10'),
 (118, 16, 'Added new PPMP (PPMP-2025-68F4E53DA8D86) with 2 it', 'ppmp', 42, '2025-10-19 21:18:53'),
 (119, 16, 'Updated PPMP (#42) with 3 revised items.', 'ppmp', 42, '2025-10-19 21:19:20'),
-(120, 16, 'Updated PPMP (#42) with 2 revised items.', 'ppmp', 42, '2025-10-19 21:20:10');
+(120, 16, 'Updated PPMP (#42) with 2 revised items.', 'ppmp', 42, '2025-10-19 21:20:10'),
+(121, 16, 'Added new PPMP (PPMP-2025-68F9DAED33784) with 1 it', 'ppmp', 43, '2025-10-23 15:36:13'),
+(122, 17, 'Updated profile picture', 'users', 17, '2025-10-23 19:06:54'),
+(123, 1, 'Added new item name: wa (Sub-category ID: 20)', 'item_names', 1, '2025-10-26 04:10:10'),
+(124, 1, 'Added new item name: was (Sub-category ID: 20)', 'item_names', 2, '2025-10-26 04:19:46'),
+(125, 1, 'Updated item name: wass (Sub-category ID: 20)', 'item_names', 2, '2025-10-26 04:19:52'),
+(126, 1, 'Updated item name: wass (Sub-category ID: 22)', 'item_names', 2, '2025-10-26 04:19:56'),
+(127, 1, 'Added new item name: dsa (Sub-category ID: 22)', 'item_names', 3, '2025-10-26 04:20:36'),
+(128, 1, 'Added new item name: Item 1 (Sub-category ID: 20)', 'item_names', 4, '2025-10-27 02:42:31'),
+(129, 1, 'Added new item name: Item 2 (Sub-category ID: 20)', 'item_names', 5, '2025-10-27 02:42:36'),
+(130, 1, 'Added new item name: Item 3 (Sub-category ID: 21)', 'item_names', 6, '2025-10-27 02:42:42'),
+(131, 1, 'Added new item name: Item 4 (Sub-category ID: 21)', 'item_names', 7, '2025-10-27 02:42:46'),
+(132, 1, 'Added new item name: sssss (Sub-category ID: 21)', 'item_names', 8, '2025-10-27 02:59:00'),
+(133, 1, 'Updated item name: sssssddd (Sub-category ID: 21)', 'item_names', 0, '2025-10-27 02:59:06'),
+(134, 16, 'Added new PPMP (PPMP-2025-68FEFF4EA42E7) with 2 it', 'ppmp', 48, '2025-10-27 13:12:46'),
+(135, 16, 'Added new PPMP (PPMP-2025-68FF0751E09B3) with 2 it', 'ppmp', 49, '2025-10-27 13:46:57'),
+(136, 16, 'Added new PPMP (PPMP-2025-68FF148125460) with 2 it', 'ppmp', 50, '2025-10-27 14:43:13'),
+(137, 16, 'Updated PPMP (#50) with 2 revised items.', 'ppmp', 50, '2025-10-27 15:07:26'),
+(138, 16, 'Updated PPMP (#50) with 4 revised items.', 'ppmp', 50, '2025-10-27 15:11:35'),
+(139, 16, 'Added new PPMP (PPMP-2025-69105AF4F290C) with 1 it', 'ppmp', 53, '2025-11-09 17:12:21'),
+(140, 16, 'Added new PPMP (PPMP-2025-6910606833668) with 1 it', 'ppmp', 54, '2025-11-09 17:35:36'),
+(141, 16, 'Added new PPMP (PPMP-2025-691062B1639E9) with 1 it', 'ppmp', 55, '2025-11-09 17:45:21'),
+(142, 16, 'Added new PPMP (PPMP-2025-69106C3091FAC) with 2 it', 'ppmp', 56, '2025-11-09 18:25:52'),
+(143, 16, 'Added new PPMP (PPMP-2025-69106D1D254CE) with 2 it', 'ppmp', 57, '2025-11-09 18:29:49'),
+(144, 16, 'Added new PPMP (PPMP-2025-69106EA4A2174) with 2 it', 'ppmp', 58, '2025-11-09 18:36:20'),
+(145, 16, 'Added new PPMP (PPMP-2025-6910704F80B3C) with 2 it', 'ppmp', 59, '2025-11-09 18:43:27'),
+(146, 16, 'Added new PPMP (PPMP-2025-6910712B6BF87) with 2 it', 'ppmp', 60, '2025-11-09 18:47:07'),
+(147, 16, 'Added new PPMP (PPMP-2025-691071BC6B795) with 2 it', 'ppmp', 61, '2025-11-09 18:49:32'),
+(148, 16, 'Updated PPMP (#61) with 1 total items.', 'ppmp', 61, '2025-11-10 03:08:19'),
+(149, 16, 'Updated PPMP (#61) with 2 total items.', 'ppmp', 61, '2025-11-10 03:09:13');
 
 -- --------------------------------------------------------
 
@@ -189,7 +218,7 @@ CREATE TABLE `budget_allocation` (
 --
 
 INSERT INTO `budget_allocation` (`allocation_id`, `office_id`, `fiscal_year_id`, `allocated_amount`, `remaining_amount`, `status`, `created_at`) VALUES
-(11, 5, 3, 1000000.00, 1000000.00, 'Approved', '2025-10-17 16:28:40'),
+(11, 5, 3, 1000000.00, 990276.00, 'Approved', '2025-10-17 16:28:40'),
 (12, 9, 3, 1000000.00, 1000000.00, 'Pending', '2025-10-17 16:28:45'),
 (13, 11, 3, 1000000.00, 1000000.00, 'Pending', '2025-10-17 16:28:51'),
 (14, 10, 3, 2000000.00, 2000000.00, 'Approved', '2025-10-17 16:29:00');
@@ -238,6 +267,30 @@ INSERT INTO `item_categories` (`category_id`, `category_name`, `category_code`, 
 (4, 'Consultancy Services', '0003', 'Consultancy Services Description', 1),
 (5, 'Goods and Services', '0001', 'Goods and Services Description', 1),
 (6, 'Infrastructure Projects', '0002', 'Infrastructure Projects Description', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `item_names`
+--
+
+CREATE TABLE `item_names` (
+  `item_name_id` int(11) NOT NULL,
+  `sub_category_id` int(11) NOT NULL,
+  `item_name` varchar(255) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `item_names`
+--
+
+INSERT INTO `item_names` (`item_name_id`, `sub_category_id`, `item_name`, `created_at`, `updated_at`) VALUES
+(4, 20, 'Item 1', '2025-10-26 18:42:31', '2025-10-26 18:42:31'),
+(5, 20, 'Item 2', '2025-10-26 18:42:36', '2025-10-26 18:42:36'),
+(6, 21, 'Item 3', '2025-10-26 18:42:42', '2025-10-26 18:42:42'),
+(7, 21, 'Item 4', '2025-10-26 18:42:46', '2025-10-26 18:42:46');
 
 -- --------------------------------------------------------
 
@@ -300,10 +353,8 @@ CREATE TABLE `ppmp` (
   `fiscal_year_id` int(11) NOT NULL,
   `ppmp_code` varchar(50) NOT NULL,
   `status` enum('Pending','Approved','Rejected') NOT NULL DEFAULT 'Pending',
-  `submission_date` date DEFAULT NULL,
   `approval_date` date DEFAULT NULL,
   `total_amount` decimal(15,2) DEFAULT NULL,
-  `remarks` varchar(500) DEFAULT NULL,
   `submitted_by` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -317,19 +368,23 @@ CREATE TABLE `ppmp` (
 CREATE TABLE `ppmp_items` (
   `item_id` int(11) NOT NULL,
   `ppmp_id` int(11) NOT NULL,
+  `item_description` varchar(255) DEFAULT NULL,
   `category_id` int(11) NOT NULL,
   `sub_category_id` int(11) NOT NULL,
-  `item_name` varchar(255) NOT NULL,
-  `item_description` varchar(500) DEFAULT NULL,
-  `specifications` varchar(500) DEFAULT NULL,
+  `item_name_id` int(11) NOT NULL,
   `quantity` int(11) NOT NULL,
-  `unit_of_measure` varchar(50) NOT NULL,
-  `unit_cost` decimal(15,2) NOT NULL,
-  `total_cost` decimal(15,2) GENERATED ALWAYS AS (`quantity` * `unit_cost`) STORED,
-  `quarter_needed` varchar(20) NOT NULL,
+  `specifications` varchar(255) DEFAULT NULL,
+  `mode_of_procurement` varchar(255) NOT NULL,
+  `pre_procurement_conference` varchar(20) NOT NULL,
+  `procurement_start_date` date NOT NULL,
+  `bidding_date` date NOT NULL,
+  `contract_signing_date` date NOT NULL,
+  `source_of_funds` varchar(100) NOT NULL,
+  `estimated_budget` decimal(15,2) NOT NULL,
+  `total_cost` decimal(15,2) GENERATED ALWAYS AS (`quantity` * `estimated_budget`) STORED,
+  `file_attachment` varchar(255) NOT NULL,
   `procurement_method` varchar(50) DEFAULT NULL,
-  `justification` varchar(500) DEFAULT NULL,
-  `created_at` datetime NOT NULL DEFAULT current_timestamp()
+  `remarks` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -400,10 +455,10 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `username`, `password`, `email`, `first_name`, `last_name`, `phone`, `profile`, `is_active`, `created_at`, `last_login`) VALUES
-(1, 'admin', '$2y$10$pZLsb/4e36DdhP7RFqQY0OPkHbWDdTQhee6i6ZSWUkm.BF2vPJd5.', 'admin@gmail.com', 'Rodrigo', 'Duterte', '9509972084', 'doe_20250929_160658.png', 1, '2025-09-28 10:33:37', '2025-10-19 18:56:23'),
-(16, 'dean', '$2y$10$iDyW8R57OXQBmBqfP.FfmeRi6JZhbyVfii3Sxm7xtyUXsXj.Nrcha', 'dean@gmail.com', 'Apolinario', 'Mabini', '9509972082', 'avatar.png', 1, '2025-10-06 19:54:42', '2025-10-19 21:01:51'),
-(17, 'finance', '$2y$10$Zt8b1bx.XlL.z//DrMxVMe9VajlgyepHRL60qSTHU0Gy.71JlZQoS', 'finance@gmail.com', 'Jose', 'Rizal', '9509972322', 'avatar.png', 1, '2025-10-06 19:56:54', '2025-10-19 18:56:34'),
-(20, 'sector2', '$2y$10$QVB2Vm3JDXSV3QG8DncnmuW391qFXRIglghKi.fn4uk.zW3lZmHsa', 'rizal@gmail.com', 'Jose', 'Rizal', '9432432424', 'avatar.png', 1, '2025-10-17 13:20:14', NULL),
+(1, 'admin', '$2y$10$pZLsb/4e36DdhP7RFqQY0OPkHbWDdTQhee6i6ZSWUkm.BF2vPJd5.', 'admin@gmail.com', 'Rodrigo', 'Duterte', '9509972084', 'doe_20250929_160658.png', 1, '2025-09-28 10:33:37', '2025-10-29 03:37:24'),
+(16, 'dean', '$2y$10$iDyW8R57OXQBmBqfP.FfmeRi6JZhbyVfii3Sxm7xtyUXsXj.Nrcha', 'dean@gmail.com', 'Apolinario', 'Mabini', '9509972082', 'avatar.png', 1, '2025-10-06 19:54:42', '2025-11-10 01:23:46'),
+(17, 'finance', '$2y$10$Zt8b1bx.XlL.z//DrMxVMe9VajlgyepHRL60qSTHU0Gy.71JlZQoS', 'finance@gmail.com', 'Jose', 'Rizal', '9509972322', 'rizal_20251023_190654.jpg', 1, '2025-10-06 19:56:54', '2025-10-29 01:37:16'),
+(20, 'sector2', '$2y$10$Zt8b1bx.XlL.z//DrMxVMe9VajlgyepHRL60qSTHU0Gy.71JlZQoS', 'rizal@gmail.com', 'Jose', 'Rizal', '9432432424', 'avatar.png', 1, '2025-10-17 13:20:14', '2025-10-23 19:36:00'),
 (21, 'sector3', '$2y$10$Km4kpzeVTuZkuLLCnC2yKuioZjQT5FkDlXkIYUjCuyM/wKbse1PUC', 'duterte@gmail.com', 'Rodrigo', 'Duterte', '9503943434', 'avatar.png', 1, '2025-10-17 13:20:44', NULL),
 (22, 'sector4', '$2y$10$B..aMHZIeV.WsKzuOjmDFOif2iVmtXITj.92PkIxeR2.KpM.nKKwi', 'sara@gmail.com', 'Sara', 'Duterte', '9404343434', 'avatar.png', 1, '2025-10-17 13:21:13', NULL),
 (23, 'sector5', '$2y$10$J8surTOynxRuY15ih96QL.fZwl/D6rsTwGeWJmX.TTm2ZjGoPG3Sa', 'bulag@gmail.com', 'Pambato ng', 'Bulag', '9503442424', 'avatar.png', 1, '2025-10-17 13:21:56', NULL);
@@ -460,18 +515,28 @@ CREATE TABLE `user_sessions` (
 --
 
 INSERT INTO `user_sessions` (`session_id`, `user_id`, `session_token`, `expires_at`, `is_active`, `created_at`) VALUES
-(89, 16, '1aa828be493222cac4cb926b1a67a416a0070d0b3f2b3e51489a50ffafeb2572', '2025-10-18 06:28:12', 0, '2025-10-18 12:28:12'),
-(90, 17, '942e6936a57f42b4d28ee5bada841ccd46092b960055dbb2081531ce7f540e6d', '2025-10-18 06:30:00', 0, '2025-10-18 12:30:00'),
-(91, 1, 'fcde0499d574dbe485b4e657613b7973fc8a91ec4e8df63b41bc534de42139b8', '2025-10-18 08:00:51', 1, '2025-10-18 14:00:51'),
-(92, 17, 'd47049a1e4b65650aa2dc4041790c205bd354fcc5123eec2346b365014b01dba', '2025-10-18 08:31:11', 1, '2025-10-18 14:31:11'),
-(93, 16, '102cb9a8cfa214031e203fac53eb2794d9c7044f5ec11653e44f82c84e3485b4', '2025-10-18 08:31:20', 1, '2025-10-18 14:31:20'),
-(94, 1, '9bc96a5442d225d6ceebb84a389cdc0e3b5772f5ad2b10f96aa29e8d4de1410c', '2025-10-19 07:15:53', 0, '2025-10-19 13:15:53'),
-(95, 17, '3f970df9755ce28cfba09007d3228d9a5681642c3279aa903354eb57760ac0c8', '2025-10-19 07:16:05', 0, '2025-10-19 13:16:05'),
-(96, 16, '85c3bd986b78f2665ba437cd3b8d44856ef54ad0be88ab011c0fb771f7d99519', '2025-10-19 07:16:12', 0, '2025-10-19 13:16:12'),
-(97, 1, '1db13c169cae25295c4fc2392acd126b07996aaa9a7135c9b2251993b37bf08c', '2025-10-19 12:56:23', 0, '2025-10-19 18:56:23'),
-(98, 17, 'e0f04c437ce588154e4395cbb1b861c0d0502fc8635e7b4440b9ee8d9b244f9e', '2025-10-19 12:56:34', 0, '2025-10-19 18:56:34'),
-(99, 16, '549fc470151e1dc31624437517eb5476898fdfc5051676256896ec69d3995368', '2025-10-19 12:56:41', 0, '2025-10-19 18:56:41'),
-(100, 16, 'f2825e04d9349896f9252693013f5de6af9f2bdfe8a24cea54f2162c80f66768', '2025-10-19 15:01:51', 1, '2025-10-19 21:01:51');
+(112, 1, '87bf6a1461018106b681f5fc31afea78afae1a65da3f218c52d5c62cd6b75007', '2025-10-26 22:43:54', 1, '2025-10-27 04:43:54'),
+(113, 16, '6485bd6e5509144a4baacb41c32705239dca9353cda80d50067973b998d55447', '2025-10-27 06:53:23', 1, '2025-10-27 12:53:23'),
+(114, 1, '8e43064fba8ee4875be3a252997e78664aedca6485e84117ea9750ae63f8d879', '2025-10-27 06:53:30', 0, '2025-10-27 12:53:30'),
+(115, 16, '1c1d56687e2835262de414a11a2639b1e77c4259d360348e28c1b76a606e728d', '2025-10-27 08:28:57', 1, '2025-10-27 14:28:57'),
+(116, 1, 'dd74952d5d678724b3432481fb4d41fa314e6ffd115f1521bf891208a01b138e', '2025-10-27 09:12:19', 1, '2025-10-27 15:12:19'),
+(117, 17, '41d2d7683276c76ba391901f6f33f7c08fdfe0c53a8d7036a83572962d13d3e2', '2025-10-27 09:41:58', 1, '2025-10-27 15:41:58'),
+(118, 16, '4bfeacb302abd28608985a6b174b68e062a90e8a84b64ce67d03df4162cfa910', '2025-10-28 13:46:44', 0, '2025-10-28 19:46:44'),
+(119, 1, '3ee577e2af98ac988341bc1b965a1368baab5b5a7c747564ddc5bbcab9abc147', '2025-10-28 19:36:52', 0, '2025-10-29 01:36:52'),
+(120, 16, '4e449690723b1f1f99786512ff9ea25cdcb4d273c4eaefe5beb65117d5fe3010', '2025-10-28 19:37:01', 1, '2025-10-29 01:37:01'),
+(121, 17, 'cdf534eedc8c1f88d2ab20a6f1c71b1c27af0eb02a61c8d421e12de972d4ac29', '2025-10-28 19:37:16', 1, '2025-10-29 01:37:16'),
+(122, 1, '1cfc97470e3e5e8e5ccdcf4632cf38b7b5c4aa39120d0af1de9df0b3f524852e', '2025-10-28 21:37:24', 1, '2025-10-29 03:37:24'),
+(123, 16, 'e466a1eabc6eaaf8cd1d31f3bca16bbdde63b25e9b7d28a80329872838995b63', '2025-11-08 05:58:42', 0, '2025-11-08 11:58:42'),
+(124, 16, 'e7618d3ad4838b9b3598b7f53e7a617ec79744cf67b4b9817d2ef8376bdc5a31', '2025-11-08 08:15:12', 1, '2025-11-08 14:15:12'),
+(125, 16, '9a78dbd2c27d4f51c65ed5e28c358ce1d5466b30e470fab2827cac2e5590ed12', '2025-11-08 09:53:59', 0, '2025-11-08 15:53:59'),
+(126, 16, 'b54e7b868a8291bcd76cdb402d0c51770f154a69d797741f46f2c625406c7a46', '2025-11-08 11:54:33', 0, '2025-11-08 17:54:33'),
+(127, 16, '621e5cbd932200662968bd3ca63683db49f75dcfd936cef9dc8ca77022e6ec29', '2025-11-08 14:30:22', 0, '2025-11-08 20:30:22'),
+(128, 16, '207f1d783faf3d3b919f161807f533fe1f006daa157bab375e7e5261bc71fc7c', '2025-11-08 19:31:24', 1, '2025-11-09 01:31:24'),
+(129, 16, 'aca125cceb783c7046291c0e0867a5cbde2f9df9b16ce269fd6cfe2be296d5e1', '2025-11-09 10:33:51', 1, '2025-11-09 16:33:51'),
+(130, 16, '9b337e5e9557d24a5353053586740f73ec461782974492efe4273845ebf7b252', '2025-11-09 12:14:09', 0, '2025-11-09 18:14:09'),
+(131, 16, 'f0fabfdfca2aac12041bc0efd41b3a4ea6dd72639202f9f2bb3941ff1706bb31', '2025-11-09 14:17:45', 0, '2025-11-09 20:17:45'),
+(132, 16, 'e6fe6b44da076c10e878f11820c45771a9f25b9984142fcda96a5662e16a1763', '2025-11-09 16:57:11', 0, '2025-11-09 22:57:11'),
+(133, 16, '58e49b6f9b5eaf3a86d02da8d3c29ee5b553a8e4b5dbe5757bd0a004efaf164a', '2025-11-09 19:23:46', 1, '2025-11-10 01:23:46');
 
 --
 -- Indexes for dumped tables
@@ -517,6 +582,13 @@ ALTER TABLE `item_categories`
   ADD UNIQUE KEY `category_code` (`category_code`);
 
 --
+-- Indexes for table `item_names`
+--
+ALTER TABLE `item_names`
+  ADD PRIMARY KEY (`item_name_id`),
+  ADD KEY `sub_category_id` (`sub_category_id`);
+
+--
 -- Indexes for table `offices`
 --
 ALTER TABLE `offices`
@@ -549,7 +621,8 @@ ALTER TABLE `ppmp_items`
   ADD PRIMARY KEY (`item_id`),
   ADD KEY `fk_ppmp_items_category` (`category_id`),
   ADD KEY `fk_ppmp_items_ppmp` (`ppmp_id`),
-  ADD KEY `fk_ppmp_items_sub_category` (`sub_category_id`);
+  ADD KEY `fk_ppmp_items_sub_category` (`sub_category_id`),
+  ADD KEY `fk_ppmp_items_item_name` (`item_name_id`);
 
 --
 -- Indexes for table `sub_categories`
@@ -595,7 +668,7 @@ ALTER TABLE `app`
 -- AUTO_INCREMENT for table `audit_logs`
 --
 ALTER TABLE `audit_logs`
-  MODIFY `log_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=121;
+  MODIFY `log_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=150;
 
 --
 -- AUTO_INCREMENT for table `budget_allocation`
@@ -616,6 +689,12 @@ ALTER TABLE `item_categories`
   MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
+-- AUTO_INCREMENT for table `item_names`
+--
+ALTER TABLE `item_names`
+  MODIFY `item_name_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
 -- AUTO_INCREMENT for table `offices`
 --
 ALTER TABLE `offices`
@@ -631,13 +710,13 @@ ALTER TABLE `password_resets`
 -- AUTO_INCREMENT for table `ppmp`
 --
 ALTER TABLE `ppmp`
-  MODIFY `ppmp_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
+  MODIFY `ppmp_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
 
 --
 -- AUTO_INCREMENT for table `ppmp_items`
 --
 ALTER TABLE `ppmp_items`
-  MODIFY `item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+  MODIFY `item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=107;
 
 --
 -- AUTO_INCREMENT for table `sub_categories`
@@ -661,7 +740,7 @@ ALTER TABLE `user_access`
 -- AUTO_INCREMENT for table `user_sessions`
 --
 ALTER TABLE `user_sessions`
-  MODIFY `session_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=101;
+  MODIFY `session_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=134;
 
 --
 -- Constraints for dumped tables
@@ -688,6 +767,12 @@ ALTER TABLE `budget_allocation`
   ADD CONSTRAINT `fk_allocation_office` FOREIGN KEY (`office_id`) REFERENCES `offices` (`office_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
+-- Constraints for table `item_names`
+--
+ALTER TABLE `item_names`
+  ADD CONSTRAINT `item_names_ibfk_1` FOREIGN KEY (`sub_category_id`) REFERENCES `sub_categories` (`sub_category_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Constraints for table `offices`
 --
 ALTER TABLE `offices`
@@ -712,6 +797,7 @@ ALTER TABLE `ppmp`
 --
 ALTER TABLE `ppmp_items`
   ADD CONSTRAINT `fk_ppmp_items_category` FOREIGN KEY (`category_id`) REFERENCES `item_categories` (`category_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_ppmp_items_item_name` FOREIGN KEY (`item_name_id`) REFERENCES `item_names` (`item_name_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_ppmp_items_ppmp` FOREIGN KEY (`ppmp_id`) REFERENCES `ppmp` (`ppmp_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_ppmp_items_sub_category` FOREIGN KEY (`sub_category_id`) REFERENCES `sub_categories` (`sub_category_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
