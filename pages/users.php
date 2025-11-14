@@ -66,7 +66,6 @@
                     <label for="access_name">Access Role <span class="text-danger">*</span></label>
                     <select class="form-control" name="access_name" id="access_name" required>
                       <option value="" disabled selected>Select access level</option>
-                      <option value="Procurement Head">Procurement Head</option>
                       <option value="Sectors">Sectors</option>
                       <option value="Budget Office">Budget Office</option>
                     </select>
@@ -127,7 +126,6 @@
                     <label for="edit_access_name">Access Role <span class="text-danger">*</span></label>
                     <select class="form-control" name="access_name" id="edit_access_name" required>
                       <option value="" disabled selected>Select access level</option>
-                      <option value="Procurement Head">Procurement Head</option>
                       <option value="Sectors">Sectors</option>
                       <option value="Budget Office">Budget Office</option>
                     </select>
