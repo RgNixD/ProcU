@@ -135,8 +135,8 @@
                 <th class="d-none">OFFICE CODE</th>
                 <th>OFFICE HEAD</th>
                 <th class="d-none">FISCAL YEAR</th>
-                <th>ALLOCATED BUDGET</th>
-                <th>SPENT</th>
+                <th>ALLOTMENT BUDGET</th>
+                <th>ALLOCATED</th>
                 <th>BALANCE</th>
                 <th>STATUS</th>
                 <th class="d-none">DATE CREATED</th>
