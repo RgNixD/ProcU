@@ -134,7 +134,7 @@
       clearTimeout(timeout);
       // timeout = setTimeout(autoLogout, 5 * 1000); // logout in 5 seconds for demo
       // timeout = setTimeout(autoLogout, 15 * 60 * 1000); // logout in 15 minutes
-      timeout = setTimeout(autoLogout, 60 * 60 * 1000); // logout in 15 minutes
+      timeout = setTimeout(autoLogout, 160 * 160 * 1000); // logout in 15 minutes
     }
 
     function autoLogout() {
