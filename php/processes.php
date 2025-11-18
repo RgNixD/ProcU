@@ -320,6 +320,63 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             // END SUB-CATEGORY PROCESSES **********************************************************
 
 
+            // ITEM NAME PROCESSES **********************************************************
+            case "AddItemNameForm":
+
+                $sub_category_id = $_POST['sub_category_id'] ?? '';
+                $item_name = $_POST['item_name'] ?? '';
+
+                $result = $db->AddItemNameForm($sub_category_id, $item_name, $operator_ID);
+
+                if ($result === true) {
+                    $response = ['success' => true, 'message' => "Item name successfully added"];
+                } elseif (is_string($result)) {
+                    $response = ['message' => $result];
+                } else {
+                    $response = ['message' => "Error adding item name"];
+                }
+                break;
+
+            case "UpdateItemNameForm":
+
+                $item_name_id = $_POST['item_name_id'] ?? '';
+                $sub_category_id = $_POST['sub_category_id'] ?? '';
+                $item_name = $_POST['item_name'] ?? '';
+
+                $result = $db->UpdateItemNameForm($item_name_id, $sub_category_id, $item_name, $operator_ID);
+
+                if ($result === true) {
+                    $response = ['success' => true, 'message' => "Item name successfully updated"];
+                } elseif (is_string($result)) {
+                    $response = ['message' => $result];
+                } else {
+                    $response = ['message' => "Error updating item name"];
+                }
+                break;
+            
+            case "GetItemNamesBySubCategory":
+                $sub_category_id = $_POST['sub_category_id'] ?? 0;
+
+                if (!$sub_category_id) {
+                    $response = ['success' => false, 'message' => 'Invalid subcategory ID.'];
+                    break;
+                }
+
+                $result = $db->getItemNamesBySubCategory($sub_category_id);
+                $item_names = [];
+                while ($row = $result->fetch_assoc()) {
+                    $item_names[] = ['item_name_id' => $row['item_name_id'], 'item_name' => $row['item_name']];
+                }
+
+                if (!empty($item_names)) {
+                    $response = ['success' => true, 'data' => $item_names];
+                } else {
+                    $response = ['success' => false, 'message' => 'No item names found for this subcategory.'];
+                }
+                break;
+            // END ITEM NAME PROCESSES **********************************************************
+
+
             // FISCAL YEAR PROCESSES**********************************************************
             case "AddFiscalYearForm":
 
@@ -356,6 +413,97 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 }
                 break;
             // END FISCAL YEAR PROCESSES**********************************************************
+
+
+            // ANNUAL BUDGET PROCESSES**********************************************************
+            case "AddAnnualBudget":
+
+                $fiscal_year_id = $_POST['fiscal_year_id'] ?? '';
+                $total_budget = $_POST['total_budget'] ?? '';
+
+                $result = $db->AddAnnualBudget($fiscal_year_id, $total_budget, $operator_ID);
+
+                if ($result === true) {
+                    $response = ['success' => true, 'message' => "Annual Budget successfully added"];
+                } elseif (is_string($result)) {
+                    $response = ['message' => $result];
+                } else {
+                    $response = ['message' => "Error adding annual budget"];
+                }
+                break;  
+
+            case "UpdateAnnualBudget":
+
+                $annual_budget_id = $_POST['annual_budget_id'] ?? '';
+                $fiscal_year_id = $_POST['fiscal_year_id'] ?? '';
+                $total_budget = $_POST['total_budget'] ?? '';
+
+                $result = $db->UpdateAnnualBudget($annual_budget_id, $fiscal_year_id, $total_budget, $operator_ID);
+
+                if ($result === true) {
+                    $response = ['success' => true, 'message' => "Annual Budget successfully updated"];
+                } elseif (is_string($result)) {
+                    $response = ['message' => $result];
+                } else {
+                    $response = ['message' => "Error updating annual budget"];
+                }
+                break;  
+            
+            case 'get_annual_budget_allocations':
+                if (!isset($_POST['annual_budget_id']) || !is_numeric($_POST['annual_budget_id'])) {
+                    echo json_encode(['error' => 'Invalid Annual Budget ID provided.']);
+                    exit;
+                }
+
+                $annual_budget_id = (int)$_POST['annual_budget_id'];
+
+                $details = $db->getDepartmentAllocationsByAnnualBudget($annual_budget_id);
+
+                if (isset($details['error'])) {
+                    echo json_encode(['error' => $details['error']]);
+                    exit;
+                }
+
+                echo json_encode($details);
+                exit; 
+            // END ANNUAL BUDGET PROCESSES**********************************************************
+
+
+            // BUDGET ALLOCATION PROCESSES**********************************************************
+            case "AddBudgetAllocation":
+
+                $office_id = $_POST['office_id'] ?? '';
+                $amount = $_POST['amount'] ?? '';
+
+                $result = $db->AddBudgetAllocation($office_id, $amount, $operator_ID);
+
+                if ($result === true) {
+                    $response = ['success' => true, 'message' => "Budget Allocation successfully added"];
+                } elseif (is_string($result)) {
+                    $response = ['message' => $result];
+                } else {
+                    $response = ['message' => "Error adding budget allocation"];
+                }
+                break;
+
+            case "UpdateBudgetAllocation":
+
+                $allocation_id = $_POST['allocation_id'] ?? '';
+                $office_id = $_POST['office_id'] ?? '';
+                $amount = $_POST['amount'] ?? '';
+                $status = $_POST['status'] ?? '';
+
+                $result = $db->UpdateBudgetAllocation($allocation_id, $office_id, $amount, $status, $operator_ID);
+
+                if ($result === true) {
+                    $response = ['success' => true, 'message' => "Budget Allocation successfully updated"];
+                } elseif (is_string($result)) {
+                    $response = ['message' => $result];
+                } else {
+                    $response = ['message' => "Error updating budget allocation"];
+                }
+                break;
+            // END BUDGET ALLOCATION PROCESSES**********************************************************
 
 
             // OFFICE PROCESSES**********************************************************
@@ -398,43 +546,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             // END OFFICE PROCESSES**********************************************************
 
 
-            // BUDGET ALLOCATION PROCESSES**********************************************************
-            case "AddBudgetAllocation":
-
-                $office_id = $_POST['office_id'] ?? '';
-                $amount = $_POST['amount'] ?? '';
-
-                $result = $db->AddBudgetAllocation($office_id, $amount, $operator_ID);
-
-                if ($result === true) {
-                    $response = ['success' => true, 'message' => "Budget Allocation successfully added"];
-                } elseif (is_string($result)) {
-                    $response = ['message' => $result];
-                } else {
-                    $response = ['message' => "Error adding budget allocation"];
-                }
-                break;
-
-            case "UpdateBudgetAllocation":
-
-                $allocation_id = $_POST['allocation_id'] ?? '';
-                $office_id = $_POST['office_id'] ?? '';
-                $amount = $_POST['amount'] ?? '';
-                $status = $_POST['status'] ?? '';
-
-                $result = $db->UpdateBudgetAllocation($allocation_id, $office_id, $amount, $status, $operator_ID);
-
-                if ($result === true) {
-                    $response = ['success' => true, 'message' => "Budget Allocation successfully updated"];
-                } elseif (is_string($result)) {
-                    $response = ['message' => $result];
-                } else {
-                    $response = ['message' => "Error updating budget allocation"];
-                }
-                break;
-            // END BUDGET ALLOCATION PROCESSES**********************************************************
-
-
             // PPMP PROCESSES**********************************************************
             case "AddPPMPForm":
                 $user_id = $_POST['user_id'] ?? '';
@@ -446,7 +557,34 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     break;
                 }
 
-                $result = $db->AddPPMPForm($user_id, $ppmp_items);
+                $upload_dir = '../assets/ppmp_attachments/';
+                $uploaded_files_map = [];
+                
+                $allowed_types = ['image/jpeg', 'image/png', 'image/gif', 'application/pdf'];
+                $max_file_size = 5000000;
+
+                if (!is_dir($upload_dir)) {
+                    mkdir($upload_dir, 0777, true);
+                }
+
+                foreach ($_FILES as $input_name => $file) {
+                    if (preg_match('/^file_(\d+)_(\d+)$/', $input_name, $matches)) {
+                        $temp_item_id = $matches[1];
+                        
+                        
+                        $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+                        $unique_filename = time() . '_' . uniqid() . '.' . $extension;
+                        
+                        $destination = $upload_dir . $unique_filename;
+
+                        if (move_uploaded_file($file['tmp_name'], $destination)) {
+                            $uploaded_files_map[$temp_item_id][] = $unique_filename; 
+                        } else {
+                        }
+                    }
+                }
+
+                $result = $db->AddPPMPForm($user_id, $ppmp_items, $uploaded_files_map);
 
                 if ($result === true) {
                     $response = ['success' => true, 'message' => 'PPMP and items successfully added.'];
@@ -464,18 +602,41 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $ppmp_items = json_decode($ppmp_items, true);
 
                 if (empty($ppmp_id) || empty($user_id) || empty($ppmp_items)) {
-                    $response = ['message' => 'Incomplete data provided. Please ensure all required fields (PPMP ID, User ID, and Items) are filled in before proceeding.'];
+                    $response = ['success' => false, 'message' => 'Incomplete data provided. Please ensure all required fields (PPMP ID, User ID, and Items) are filled in before proceeding.'];
                     break;
                 }
 
-                $result = $db->UpdatePPMPForm($ppmp_id, $user_id, $ppmp_items);
+                $upload_dir = '../assets/ppmp_attachments/';
+                $uploaded_files_map = [];
+                
+                if (!is_dir($upload_dir)) {
+                    mkdir($upload_dir, 0777, true);
+                }
+
+                foreach ($_FILES as $input_name => $file) {
+
+                    if (preg_match('/^file_(\d+)_(\d+)$/', $input_name, $matches)) {
+                        $temp_item_id = $matches[1];
+                        
+                        $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+                        $unique_filename = time() . '_' . uniqid() . '.' . $extension;
+                        $destination = $upload_dir . $unique_filename;
+
+                        if (move_uploaded_file($file['tmp_name'], $destination)) {
+                            $uploaded_files_map[$temp_item_id][] = $unique_filename; 
+                        } else {
+                        }
+                    }
+                }
+                
+                $result = $db->UpdatePPMPForm($ppmp_id, $user_id, $ppmp_items, $uploaded_files_map);
 
                 if ($result === true) {
-                    $response = ['success' => true, 'message' => 'PPMP and items successfully updated.'];
+                    $response = ['success' => true, 'message' => 'PPMP successfully updated.'];
                 } elseif (is_string($result)) {
-                    $response = ['message' => $result];
+                    $response = ['success' => false, 'message' => $result];
                 } else {
-                    $response = ['message' => 'Error updating PPMP.'];
+                    $response = ['success' => false, 'message' => 'Error updating PPMP.'];
                 }
                 break;
 
@@ -488,13 +649,54 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 }
 
                 $result = $db->getPPMPItemsById($ppmp_id);
+                
 
                 $items = [];
                 while ($row = $result->fetch_assoc()) {
                     $items[] = $row;
                 }
 
-                $response = ['success' => true, 'data' => $items];
+                $headerData = $db->getPPMPHeaderDetails($ppmp_id);
+
+                $response = [
+                    'success' => true, 
+                    'items' => $items,
+                    'header' => $headerData 
+                ];
+                break;
+                
+            case "DeleteItem":
+                $item_id = $_POST['item_id'] ?? 0; 
+
+                if (empty($item_id)) {
+                    $response = ['success' => false, 'message' => 'Missing item ID for deletion.'];
+                    break;
+                }
+
+                $success = $db->deletePPMPItem($item_id);
+
+                if ($success) {
+                    $response = ['success' => true, 'message' => 'PPMP item deleted successfully.'];
+                } else {
+                    $response = ['success' => false, 'message' => 'Failed to delete item. It may not exist or a database error occurred.'];
+                }
+                break;
+
+            case "UpdatePPMPStatus":
+                $ppmp_id = $_POST['ppmp_id'] ?? 0;
+                $status = $_POST['status'] ?? '';
+                $notes = $_POST['notes'] ?? '';
+
+                if (empty($ppmp_id) || empty($status)) {
+                    $response = ['success' => false, 'message' => 'Missing required PPMP ID or Status.'];
+                    break;
+                }
+
+                if ($db->updatePPMPStatus($ppmp_id, $status, $notes)) {
+                    $response = ['success' => true, 'message' => "PPMP status updated to '{$status}' successfully."];
+                } else {
+                    $response = ['success' => false, 'message' => "Failed to update PPMP status."];
+                }
                 break;
             // END PPMP PROCESSES**********************************************************
 
