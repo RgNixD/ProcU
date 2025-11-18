@@ -109,6 +109,7 @@
 <script>
   $(document).ready(function() {
     $('#datatable2').DataTable();
+    $('#datatable3').DataTable();
   });
 
   document.addEventListener("DOMContentLoaded", function () {
