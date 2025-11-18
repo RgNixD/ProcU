@@ -94,25 +94,12 @@ require_once 'header.php';
               <a href="offices.php" class="text-dark"><i class="fa fa-building"></i> OFFICE</a>
             </li>
 
-            <?php
-            $is_product_active = ($current_page == 'product.php' || $current_page == 'product_types.php');
-            ?>
-
-            <li class="<?php echo $is_product_active ? 'active' : ''; ?>">
-              <a class="text-dark"><i class="fa fa-cutlery"></i> Products <span class="fa fa-chevron-down"></span></a>
-
+            <li class="<?= ($current_page == 'categories.php' || $current_page == 'sub-categories.php') ? 'active' : '' ?>">
+              <a class="text-dark"><i class="fa fa-tags"></i> CATEGORIES <span class="fa fa-chevron-down"></span></a>
               <ul class="nav child_menu submenu-flyout">
-                <li><a href="product.php" class="text-dark"> Product lists</a></li>
-                <li><a href="product_types.php" class="text-dark"> Product types</a></li>
+                <li><a href="categories.php" class="text-dark"> MAIN CATEGORIES</a></li>
+                <li><a href="sub-categories.php" class="text-dark"> SUB-CATEGORIES</a></li>
               </ul>
-            </li>
-
-            <li class="<?= ($current_page == 'categories.php') ? 'active' : '' ?>">
-              <a href="categories.php" class="text-dark"><i class="fa fa-tags"></i> CATEGORIES</a>
-            </li>
-
-            <li class="<?= ($current_page == 'sub-categories.php') ? 'active' : '' ?>">
-              <a href="sub-categories.php" class="text-dark"><i class="fa fa-tags"></i> SUB-CATEGORIES</a>
             </li>
 
             <li class="<?= ($current_page == 'item-name.php') ? 'active' : '' ?>">
@@ -123,8 +110,18 @@ require_once 'header.php';
               <a href="fiscal_years.php" class="text-dark"><i class="fa fa-calendar"></i> FISCAL YEARS</a>
             </li>
 
-            <li class="<?= ($current_page == 'budget_allocations.php') ? 'active' : '' ?>">
-              <a href="budget_allocations.php" class="text-dark"><i class="fa fa-calculator"></i> BUDGET ALLOCATIONS</a>
+            <li class="<?= ($current_page == 'annual_budget.php' || $current_page == 'budget_allocations.php') ? 'active' : '' ?>">
+                <a class="text-dark">
+                    <i class="fa fa-calculator"></i> BUDGET <span class="fa fa-chevron-down"></span>
+                </a>
+                <ul class="nav child_menu submenu-flyout">
+                    <li>
+                        <a href="annual_budget.php" class="text-dark"> ANNUAL BUDGET</a>
+                    </li>
+                    <li>
+                        <a href="budget_allocations.php" class="text-dark"> BUDGET ALLOCATIONS</a>
+                    </li>
+                </ul>
             </li>
 
             <li class="<?= ($current_page == 'review-ppmp.php') ? 'active' : '' ?>">
@@ -144,6 +141,9 @@ require_once 'header.php';
             </li>
           <?php endif; ?>
 
+
+
+
           <?php if ($canCreatePPMP): ?>
             <li class="<?= ($current_page == 'ppmp.php') ? 'active' : '' ?>">
               <a href="ppmp.php" class="text-dark"><i class="fa fa-folder"></i> MY PPMP</a>
@@ -159,12 +159,25 @@ require_once 'header.php';
             </li>
           <?php endif; ?>
 
+
+
+
           <?php if ($canManageBudget): ?>
             <?php if (!$canApprovePPMP && !$canViewReports): ?>
-              <li class="<?= ($current_page == 'budget_allocations.php') ? 'active' : '' ?>">
-                <a href="budget_allocations.php" class="text-dark"><i class="fa fa-calculator"></i> BUDGET ALLOCATIONS</a>
-              </li>
 
+              <li class="<?= ($current_page == 'annual_budget.php' || $current_page == 'budget_allocations.php') ? 'active' : '' ?>">
+                <a class="text-dark">
+                    <i class="fa fa-calculator"></i> BUDGET <span class="fa fa-chevron-down"></span>
+                </a>
+                <ul class="nav child_menu submenu-flyout">
+                    <li>
+                        <a href="annual_budget.php" class="text-dark"> ANNUAL BUDGET</a>
+                    </li>
+                    <li>
+                        <a href="budget_allocations.php" class="text-dark"> BUDGET ALLOCATIONS</a>
+                    </li>
+                </ul>
+              </li>
               <li class="<?= ($current_page == 'adjustment_logs.php') ? 'active' : '' ?>">
                 <a href="#" class="text-dark"><i class="fa fa-history"></i> ADJUSTMENT LOGS</a>
               </li>
@@ -172,11 +185,24 @@ require_once 'header.php';
           <?php endif; ?>
 
 
+
+
           <?php if (!$canCreatePPMP): ?>
             <li class="<?= ($current_page == 'reports.php') ? 'active' : '' ?>">
               <a href="#" class="text-dark"><i class="fa fa-file"></i> REPORTS</a>
             </li>
           <?php endif; ?>
+
+
+
+          <?php if ($canApprovePPMP && $canViewReports && $canManageBudget): ?>
+            <li class="<?= ($current_page == 'activiy_logs.php') ? 'active' : '' ?>">
+              <a href="activiy_logs.php" class="text-dark"><i class="fa fa-users"></i> ACTIVITY LOGS</a>
+            </li>
+          <?php endif; ?>
+
+
+
 
         </ul>
       </div>
