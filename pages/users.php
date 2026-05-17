@@ -143,9 +143,11 @@
         </div>
 
         <div class="card-box bg-white table-responsive pb-2">
-          <button data-toggle="modal" data-target="#AddNew" class="btn btn-sm btn-primary mb-3 ml-3 mt-1" title="Create User"><i
-              class="fa fa-plus"></i></button>
-          <button id="delete-selected" class="btn btn-sm btn-danger mb-3 mt-1" title="Delete User"><i class="fa fa-trash"></i></button>
+          <div class="d-flex justify-content-end mr-2">
+            <button data-toggle="modal" data-target="#AddNew" class="btn btn-sm btn-primary mb-3 mt-1" title="Create User"><i
+                class="fa fa-plus"></i></button>
+            <button id="delete-selected" class="btn btn-sm btn-danger mb-3 mt-1" title="Delete User"><i class="fa fa-trash"></i></button>
+          </div>
           <table id="datatable" class="table table-striped table-bordered table-hover" style="width:100%">
             <thead>
               <tr>
@@ -164,6 +166,20 @@
               <?php
               $users = $db->getAllUsersWithAccess($userId);
               while ($row = $users->fetch_assoc()) {
+                $accessType = htmlspecialchars($row['access_name']);
+                $badgeClass = 'bg-secondary'; 
+
+                switch ($accessType) {
+                    case 'BAC Sec Head':
+                        $badgeClass = 'bg-primary'; 
+                        break;
+                    case 'Budget Office':
+                        $badgeClass = 'bg-success';
+                        break;
+                    case 'Sectors':
+                        $badgeClass = 'bg-info'; 
+                        break;
+                }
               ?>
                 <tr>
                   <td><input type="checkbox" class="select-record d-block m-auto" name="record_<?= $row['user_id'] ?>" id="record_<?= $row['user_id'] ?>" value="<?= $row['user_id'] ?>"></td>
@@ -175,7 +191,9 @@
                   <td><?= ucwords($row['first_name'] . ' ' . $row['last_name']); ?></td>
                   <td><?= htmlspecialchars($row['email']); ?></td>
                   <td>+63<?= htmlspecialchars($row['phone']); ?></td>
-                  <td><?= htmlspecialchars($row['access_name']); ?></td>
+                  <td>
+                    <span class="text-light badge <?= $badgeClass; ?>"><?= $accessType; ?></span>
+                  </td>
                   <td ><?= date("F d, Y", strtotime($row['created_at'])); ?></td>
                   <td class="text-center">
                     <button 
