@@ -16,19 +16,19 @@
 
     $sessionData = $db->validateSession($userId, $sessionToken);
     if (!$sessionData) {
-        header("Location: logout.php");
+        header("Location: ../php/logout.php");
         exit();
     }
 
     $user = $db->getUserById($userId);
     if (!$user || $user['is_active'] == 0) {
-        header("Location: logout.php");
+        header("Location: ../php/logout.php");
         exit();
     }
 
     $permissions = $db->getUserPermissions($userId);
     if (!$permissions) {
-        header("Location: logout.php");
+        header("Location: ../php/logout.php");
         exit();
     }
 

@@ -30,7 +30,7 @@
 		}
 	}
 
-	// Database constants
+	// Database constants: LOCAL
 	if (!defined('DB_HOST'))
 		define("DB_HOST", $_ENV['DB_HOST'] ?? 'localhost');
 	if (!defined('DB_USER'))
@@ -39,6 +39,16 @@
 		define("DB_PASS", $_ENV['DB_PASS'] ?? '');
 	if (!defined('DB_NAME'))
 		define("DB_NAME", $_ENV['DB_NAME'] ?? 'db_procurement');
+	// Database constants: LIVE
+	// if (!defined('DB_HOST'))
+	// 	define("DB_HOST", 'localhost');
+	// if (!defined('DB_USER'))
+	// 	define("DB_USER", 'u644929202_db_procurement');
+	// if (!defined('DB_PASS'))
+	// 	define("DB_PASS", 'Techson123!@#');
+	// if (!defined('DB_NAME'))
+	// 	define("DB_NAME", 'u644929202_db_procurement');
+
 
 	function determineRedirectURL($permissions): string
 	{
