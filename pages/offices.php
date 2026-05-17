@@ -1,4 +1,11 @@
-<?php require_once 'sidebar.php'; ?>
+<?php
+  require_once '../php/auth_check.php';
+  if (!($canApprovePPMP && $canViewReports && $canManageBudget)) {
+      header("Location: 404.php");
+      exit();
+  }
+  require_once 'sidebar.php';
+?>
 
 <!-- page content -->
 <div class="right_col" role="main">
@@ -43,7 +50,7 @@
                     <select class="form-control" name="head_id" id="head_id" required>
                       <option value="" disabled selected>Select Office Head</option>
                       <?php
-                        $users = $db->getAllSectorsAndDeans();
+                        $users = $db->getAvailableSectorsForHead();
                         while ($user = $users->fetch_assoc()) {
                             $fullname = htmlspecialchars($user['first_name'] . ' ' . $user['last_name']);
                             echo '<option value="' . htmlspecialchars($user['user_id']) . '">' . $fullname . '</option>';
@@ -95,7 +102,7 @@
                     <select class="form-control" name="head_id" id="edit_head_id" required>
                       <option value="" disabled selected>Select Office Head</option>
                       <?php
-                        $users = $db->getAllSectorsAndDeans();
+                        $users = $db->getAllSectors();
                         while ($user = $users->fetch_assoc()) {
                             $fullname = htmlspecialchars($user['first_name'] . ' ' . $user['last_name']);
                             echo '<option value="' . htmlspecialchars($user['user_id']) . '">' . $fullname . '</option>';
@@ -120,10 +127,11 @@
         </div>
 
         <div class="card-box bg-white table-responsive pb-2">
-          <button data-toggle="modal" data-target="#AddNew" class="btn btn-sm btn-primary mb-3 ml-3 mt-1"><i
-              class="fa fa-plus"></i> Create Office</button>
-          <button id="delete-selected" class="btn btn-sm btn-danger mb-3 mt-1"><i class="fa fa-trash"></i>
-            Delete</button>
+          <div class="d-flex justify-content-end mr-2">
+            <button data-toggle="modal" data-target="#AddNew" class="btn btn-sm btn-primary mb-3 ml-3 mt-1" title="Create Office"><i
+                class="fa fa-plus"></i></button>
+            <button id="delete-selected" class="btn btn-sm btn-danger mb-3 mt-1" title="Delete Office"><i class="fa fa-trash"></i></button>
+          </div>
           <table id="datatable" class="table table-striped table-bordered table-hover" style="width:100%">
             <thead>
               <tr>
@@ -131,9 +139,9 @@
                 <th>OFFICE NAME</th>
                 <th>OFFICE CODE</th>
                 <th>OFFICE HEAD</th>
-                <th>EMAIL</th>
-                <th>PHONE</th>
-                <th>ROLE</th>
+                <th class="d-none">EMAIL</th>
+                <th class="d-none">PHONE</th>
+                <th class="d-none">ROLE</th>
                 <th>DATE CREATED</th>
                 <th class="text-center">ACTIONS</th>
               </tr>
@@ -144,13 +152,13 @@
               while ($row = $offices->fetch_assoc()) {
               ?>
                 <tr>
-                  <td><input type="checkbox" class="select-record d-block m-auto" value="<?= $row['office_id'] ?>"></td>
+                  <td><input type="checkbox" class="select-record d-block m-auto" name="record_<?= $row['office_id'] ?>" id="record_<?= $row['office_id'] ?>" value="<?= $row['office_id'] ?>"></td>
                   <td><?= htmlspecialchars($row['office_name']); ?></td>
                   <td><?= htmlspecialchars($row['office_code']); ?></td>
                   <td><?= htmlspecialchars($row['head_name'] ?: '—'); ?></td>
-                  <td><?= htmlspecialchars($row['head_email'] ?: '—'); ?></td>
-                  <td><?= $row['head_phone'] ? '+63' . htmlspecialchars($row['head_phone']) : '—'; ?></td>
-                  <td><?= htmlspecialchars($row['head_role'] ?: '—'); ?></td>
+                  <td class="d-none"><?= htmlspecialchars($row['head_email'] ?: '—'); ?></td>
+                  <td class="d-none"><?= $row['head_phone'] ? '+63' . htmlspecialchars($row['head_phone']) : '—'; ?></td>
+                  <td class="d-none"><?= htmlspecialchars($row['head_role'] ?: '—'); ?></td>
                   <td><?= date("M. d, Y", strtotime($row['created_at'])); ?></td>
                   <td class="text-center">
                     <button 
@@ -202,7 +210,6 @@
       });
     });
 
-    // Populate update modal with candidate data
     $('#datatable').on('click', '.edit-office', function () {
       const officeId = $(this).data('office-id');
       const officeName = $(this).data('office-name');
