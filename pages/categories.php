@@ -1,11 +1,18 @@
-<?php require_once 'sidebar.php'; ?>
+<?php
+  require_once '../php/auth_check.php';
+  if (!($canApprovePPMP && $canViewReports && $canManageBudget)) {
+      header("Location: 404.php");
+      exit();
+  }
+  require_once 'sidebar.php';
+?>
 
 <!-- page content -->
 <div class="right_col" role="main">
   <div class="">
     <div class="page-title">
       <div class="title_left">
-        <h3>Item Categories</h3>
+        <h3>Main Categories</h3>
       </div>
     </div>
 
@@ -13,7 +20,7 @@
 
     <div class="x_panel">
       <div class="x_title">
-        <h2>Item Categories List</h2>
+        <h2>Main Categories List</h2>
         <div class="clearfix"></div>
       </div>
       <div class="x_content">
@@ -60,10 +67,6 @@
         <div class="modal fade" id="UpdateModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div class="modal-dialog">
             <form id="UpdateForm" autocomplete="off" enctype="multipart/form-data">
-
-              <input type="hidden" class="form-control" name="user_type" id="edit_user_type" value="Administrator"
-                required>
-
               <div class="modal-content">
                 <div class="modal-header bg-light">
                   <h5 class="modal-title" id="exampleModalLabel">Update category</h5>
@@ -105,10 +108,11 @@
         </div>
 
         <div class="card-box bg-white table-responsive pb-2">
-          <button data-toggle="modal" data-target="#AddNew" class="btn btn-sm btn-primary mb-3 ml-3 mt-1"><i
-              class="fa fa-plus"></i> Create category</button>
-          <button id="delete-selected" class="btn btn-sm btn-danger mb-3 mt-1"><i class="fa fa-trash"></i>
-            Delete</button>
+          <div class="d-flex justify-content-end mr-2">
+            <button data-toggle="modal" data-target="#AddNew" class="btn btn-sm btn-primary mb-3 ml-3 mt-1" title="Create category"><i
+                class="fa fa-plus"></i></button>
+            <button id="delete-selected" class="btn btn-sm btn-danger mb-3 mt-1" title="Delete category"><i class="fa fa-trash"></i></button>
+          </div>
           <table id="datatable" class="table table-striped table-bordered table-hover" style="width:100%">
             <thead>
               <tr>
@@ -129,7 +133,7 @@
                   : '<span class="badge bg-secondary p-1 rounded text-light">Inactive</span>';
               ?>
                 <tr>
-                  <td><input type="checkbox" class="select-record d-block m-auto" value="<?= $row['category_id'] ?>"></td>
+                  <td><input type="checkbox" class="select-record d-block m-auto" name="record_<?= $row['category_id'] ?>" id="record_<?= $row['category_id'] ?>" value="<?= $row['category_id'] ?>"></td>
                   <td><?= htmlspecialchars($row['category_name']); ?></td>
                   <td class="text-center"><?= htmlspecialchars($row['category_code']); ?></td>
                   <td><?= htmlspecialchars($row['description']); ?></td>
@@ -181,9 +185,7 @@
         }
       });
     });
-
     
-    // Populate update modal with candidate data
     $('#datatable').on('click', '.edit-category', function () {
       const category_id = $(this).data('category-id');
       const category_name = $(this).data('category_name');
@@ -191,14 +193,12 @@
       const description = $(this).data('description');
       const status = $(this).data('status');
 
-      // Set values in the modal fields
       $('#edit_category_id').val(category_id);
       $('#edit_category_name').val(category_name);
       $('#edit_category_code').val(category_code);
       $('#edit_description').val(description);
       $('#edit_status').val(status);
 
-      // Show modal
       $('#UpdateModal').modal('show');
     });
 
