@@ -25,7 +25,6 @@ require_once 'sidebar.php';
   }
 </style>
 
-<!-- page content -->
 <div class="right_col" role="main">
   <div class="">
     <div class="page-title">
@@ -49,98 +48,58 @@ require_once 'sidebar.php';
               <input type="hidden" class="form-control" name="user_id" id="user_id" value="<?= $userId ?>">
               <input type="hidden" class="form-control" name="remaining_budget" id="remaining_budget"
                 value="<?= $remainingBudget ?>">
+              <input type="hidden" id="latest_ppmp_status" value="<?= $latestPPMPStatus ?>">
 
               <div class="row">
+                <!-- LEFT COLUMN -->
                 <div class="col-md-6 mb-3">
                   <h5 class="fw-bold">Project/Item Identification</h5>
+
                   <div class="form-group">
                     <label for="item_description" class="form-label fw-bold">Project Description</label>
                     <textarea class="form-control" name="item_description" id="item_description"
                       placeholder="Enter Project Description" rows="2"></textarea>
                   </div>
-                  <div class="form-group">
-                    <label for="category_id" class="form-label fw-bold">Category</label>
-                    <select class="form-control form-select" name="category_id" id="category_id">
-                      <option value="" disabled selected>Select Category</option>
-                      <?php
-                      $categories = $db->getAllCategories();
-                      while ($row = $categories->fetch_assoc()) {
-                        echo '<option value="' . htmlspecialchars($row['category_id']) . '">' . htmlspecialchars($row['category_name']) . '</option>';
-                      }
-                      ?>
-                    </select>
-                  </div>
-                  <div class="form-group">
-                    <label for="sub_category_id" class="form-label fw-bold">Subcategory</label>
-                    <select class="form-control form-select" name="sub_category_id" id="sub_category_id" disabled>
-                      <option value="" disabled selected>Select Subcategory</option>
-                    </select>
-                  </div>
-                  <div class="form-group">
-                    <label for="item_name_id" class="form-label fw-bold">Item name</label>
-                    <select class="form-control form-select" name="item_name_id" id="item_name_id" disabled>
-                      <option value="" disabled selected>Select Item Name</option>
-                    </select>
-                  </div>
-                </div>
 
-                <div class="col-md-6 mb-3">
-                  <h5 class="fw-bold">Item Details</h5>
-                  <div class="form-group">
-                    <label for="quantity" class="form-label fw-bold">Quantity</label>
-                    <input type="number" class="form-control" name="quantity" id="quantity" value="1" min="1">
-                  </div>
-                  <div class="form-group">
-                    <label for="specification" class="form-label fw-bold">Specification</label>
-                    <textarea class="form-control" name="specification" id="specification"
-                      placeholder="Enter other specification (e.g., color, material, brand requirement, size)"
-                      rows="2"></textarea>
-                  </div>
-
-                  <h5 class="fw-bold mt-3">Procurement Details</h5>
-                  <div class="form-group">
-                    <label for="mode_of_procurement" class="form-label fw-bold">Mode of Procurement</label>
-                    <select class="form-control form-select select2" name="mode_of_procurement"
-                      id="mode_of_procurement">
-                      <option value="" disabled selected>Select Mode of Procurement</option>
-                      <option value="Competitive Bidding">Competitive Bidding</option>
-                      <option value="Limited Source Bidding">Limited Source Bidding</option>
-                      <option value="Competitive Dialogue">Competitive Dialogue</option>
-                      <option value="Unsolicited Offer with Bid Matching">Unsolicited Offer with Bid Matching
-                      </option>
-                      <option value="Direct Contracting">Direct Contracting</option>
-                      <option value="Direct Acquisition">Direct Acquisition</option>
-                      <option value="Repeat Order">Repeat Order</option>
-                      <option value="Small Value Procurement">Small Value Procurement</option>
-                      <option value="Negotiated Procurement">Negotiated Procurement</option>
-                      <option value="Direct Sales">Direct Sales</option>
-                      <option value="Direct Procurement for Science, Technology, and Innovation">Direct Procurement
-                        for Science, Technology, and Innovation</option>
-                    </select>
-                  </div>
-                  <div class="form-group">
-                    <label for="pre_procurement_conference" class="form-label fw-bold">Pre-procurement
-                      Conference</label>
-                    <select class="form-control form-select" name="pre_procurement_conference"
-                      id="pre_procurement_conference">
-                      <option value="" disabled selected>Select an option</option>
-                      <option value="Yes">Yes</option>
-                      <option value="No">No</option>
-                    </select>
-                  </div>
-
-                </div>
-
-                <div class="col-md-12">
-                  <hr>
-                </div>
-              </div>
-
-              <div class="row">
-                <div class="col-md-12">
-                  <h5 class="fw-bold">Activity Schedule</h5>
                   <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <label for="category_id" class="form-label fw-bold">Category</label>
+                        <select class="form-control form-select" name="category_id" id="category_id">
+                          <option value="" disabled selected>Select Category</option>
+                          <?php
+                          $categories = $db->getAllCategories();
+                          while ($row = $categories->fetch_assoc()) {
+                            echo '<option value="' . htmlspecialchars($row['category_id']) . '">' . htmlspecialchars($row['category_name']) . '</option>';
+                          }
+                          ?>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="sub_category_id" class="form-label fw-bold">Subcategory</label>
+                        <select class="form-control form-select" name="sub_category_id" id="sub_category_id" disabled>
+                          <option value="" disabled selected>Select Subcategory</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="item_name_id" class="form-label fw-bold">Item name</label>
+                        <select class="form-control form-select" name="item_name_id" id="item_name_id" disabled>
+                          <option value="" disabled selected>Select Item Name</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  <h5 class="fw-bold mt-3">Activity Schedule</h5>
+
+                  <div class="row">
+                    <div class="col-md-6">
                       <div class="form-group">
                         <label for="procurement_start_date" class="form-label fw-bold">Start of Procurement
                           Activity</label>
@@ -149,7 +108,8 @@ require_once 'sidebar.php';
                         <small id="procurement_start_error" class="text-danger"></small>
                       </div>
                     </div>
-                    <div class="col-md-4">
+
+                    <div class="col-md-6">
                       <div class="form-group">
                         <label for="bidding_date" class="form-label fw-bold">Bidding/Negotiation Date</label>
                         <input type="date" class="form-control" name="bidding_date" id="bidding_date"
@@ -157,7 +117,8 @@ require_once 'sidebar.php';
                         <small id="bidding_date_error" class="text-danger"></small>
                       </div>
                     </div>
-                    <div class="col-md-4">
+
+                    <div class="col-md-6">
                       <div class="form-group">
                         <label for="contract_signing_date" class="form-label fw-bold">Contract Signing/Award
                           Date</label>
@@ -167,42 +128,16 @@ require_once 'sidebar.php';
                       </div>
                     </div>
                   </div>
-                </div>
 
-                <div class="col-md-12">
-                  <hr>
-                </div>
+                  <h5 class="fw-bold mt-3">Supporting Documentation and Final Remarks</h5>
 
-                <div class="col-md-6">
-                  <h5 class="fw-bold">Financial and Other Details</h5>
                   <div class="form-group">
-                    <label for="source_of_funds" class="form-label fw-bold">Source of Funds</label>
-                    <select class="form-control form-select select2" name="source_of_funds" id="source_of_funds">
-                      <option value="" disabled selected>Select Source of Funds</option>
-                      <option value="Current Appropriation">Current Appropriation</option>
-                      <option value="Continuing Appropriation">Continuing Appropriation</option>
-                      <option value="Corporate Operating Budget">Corporate Operating Budget</option>
-                      <option value="Appropriation Ordinance">Appropriation Ordinance</option>
-                      <option value="Internally Generated Income">Internally Generated Income</option>
-                      <option value="Special Purpose Fund">Special Purpose Fund</option>
-                      <option value="Trust Fund">Trust Fund</option>
-                      <option value="Foreign-Assisted Fund">Foreign-Assisted Fund</option>
-                    </select>
-                  </div>
-                  <div class="form-group">
-                    <label for="estimated_budget" class="form-label fw-bold">Estimated Budget (per item/project)</label>
-                    <input type="number" class="form-control" name="estimated_budget" id="estimated_budget"
-                      placeholder="Enter estimated budget (e.g., 150000.00)" min="0" step="0.01">
-                  </div>
-                </div>
-
-                <div class="col-md-6">
-                  <h5 class="fw-bold">Supporting Documentation and Final Remarks</h5>
-                  <div class="form-group">
-                    <label for="file_attachment" class="form-label fw-bold">Attachment (Image/Documents)</label>
+                    <label for="file_attachment" class="form-label fw-bold">Attachment (Documents)</label>
                     <input type="file" class="form-control" name="file_attachment[]" id="file_attachment"
                       accept=".jpg,.jpeg,.png,.pdf,.doc,.docx" multiple>
+                    <div id="selected_files_preview" class="mt-2"></div>
                   </div>
+
                   <div class="form-group">
                     <label for="remarks" class="form-label fw-bold">Remarks/Other Details</label>
                     <textarea class="form-control" name="remarks" id="remarks" rows="2"
@@ -210,17 +145,104 @@ require_once 'sidebar.php';
                   </div>
                 </div>
 
-                <div class="col-md-12 mt-3 d-flex justify-content-end">
-                  <button type="button" class="btn btn-danger btn-sm me-2" id="clearBtn"><i
-                      class="fa fa-times me-1"></i> Clear
-                  </button>
-                  <button type="button" class="btn btn-primary btn-sm" id="addBtn"><i class="fa fa-plus me-1"></i> Add
-                    to PPMP
-                  </button>
+                <!-- RIGHT COLUMN -->
+                <div class="col-md-6 mb-3">
+                  <h5 class="fw-bold">Item Details</h5>
+
+                  <div class="row">
+                    <div class="col-md-7">
+                      <div class="form-group">
+                        <label for="quantity" class="form-label fw-bold">Quantity</label>
+                        <input type="number" class="form-control" name="quantity" id="quantity" value="1" min="1">
+                      </div>
+                    </div>
+
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <label for="specification" class="form-label fw-bold">Specification</label>
+                        <textarea class="form-control" name="specification" id="specification"
+                          placeholder="Enter other specification (e.g., color, material, brand requirement, size)"
+                          rows="2"></textarea>
+                      </div>
+                    </div>
+                  </div>
+
+                  <h5 class="fw-bold mt-3">Financial and Other Details</h5>
+
+                  <div class="row">
+                    <div class="col-md-7">
+                      <div class="form-group">
+                        <label for="source_of_funds" class="form-label fw-bold">Source of Funds</label>
+                        <select class="form-control form-select select2" name="source_of_funds" id="source_of_funds">
+                          <option value="" disabled selected>Select Source of Funds</option>
+                          <option value="Current Appropriation">Current Appropriation</option>
+                          <option value="Continuing Appropriation">Continuing Appropriation</option>
+                          <option value="Corporate Operating Budget">Corporate Operating Budget</option>
+                          <option value="Appropriation Ordinance">Appropriation Ordinance</option>
+                          <option value="Internally Generated Income">Internally Generated Income</option>
+                          <option value="Special Purpose Fund">Special Purpose Fund</option>
+                          <option value="Trust Fund">Trust Fund</option>
+                          <option value="Foreign-Assisted Fund">Foreign-Assisted Fund</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="col-md-5">
+                      <div class="form-group">
+                        <label for="estimated_budget" class="form-label fw-bold">Estimated Budget per Item</label>
+                        <input type="text" class="form-control" name="estimated_budget" id="estimated_budget"
+                          placeholder="Enter amount" inputmode="decimal" onkeyup="formatCurrency(this)"
+                          onblur="formatCurrency(this, true)" onfocus="this.select()">
+                      </div>
+                    </div>
+                  </div>
+
+                  <h5 class="fw-bold mt-3">Procurement Details</h5>
+
+                  <div class="row">
+                    <div class="col-md-7">
+                      <div class="form-group">
+                        <label for="mode_of_procurement" class="form-label fw-bold">Mode of Procurement</label>
+                        <?php $procurementModes = $db->getProcMode(); ?>
+                        <select class="form-control form-select select2" name="mode_of_procurement"
+                          id="mode_of_procurement">
+                          <option value="" disabled selected>Select Mode of Procurement</option>
+                          <?php while ($mode = $procurementModes->fetch_assoc()): ?>
+                            <option value="<?= (int) $mode['proc_mode_id'] ?>">
+                              <?= htmlspecialchars($mode['proc_mode_name']) ?>
+                            </option>
+                          <?php endwhile; ?>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="col-md-5">
+                      <div class="form-group">
+                        <label for="pre_procurement_conference" class="form-label fw-bold">Pre-procurement
+                          Conference</label>
+                        <select class="form-control form-select" name="pre_procurement_conference"
+                          id="pre_procurement_conference">
+                          <option value="" disabled selected>Select an option</option>
+                          <option value="Yes">Yes</option>
+                          <option value="No">No</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="d-flex justify-content-end mt-3">
+                    <button type="button" class="btn btn-danger btn-sm me-2" id="clearBtn">
+                      <i class="fa fa-times me-1"></i> Clear
+                    </button>
+                    <button type="button" class="btn btn-primary btn-sm" id="addBtn">
+                      <i class="fa fa-plus me-1"></i> Add to PPMP
+                    </button>
+                  </div>
                 </div>
               </div>
 
               <h6 class="text-white p-2 mb-0 mt-4" style="background-color: #a83232;">CURRENT ITEMS</h6>
+
               <div class="table-responsive">
                 <table class="table table-bordered table-responsive" id="ppmpTable">
                   <thead>
@@ -237,9 +259,7 @@ require_once 'sidebar.php';
                     <tr>
                       <th class="text-center align-middle">General Description and Objective of the Project to be
                         Procured</th>
-                      <th class="text-center align-middle">Type of the Project to be Procured (whether Goods,
-                        Infrastructure and
-                        Consulting Services)</th>
+                      <th class="text-center align-middle">Type of the Project to be Procured</th>
                       <th class="text-center align-middle">Quantity and Size of the Project to be Procured</th>
                       <th class="text-center align-middle">Recommended Mode of Procurement</th>
                       <th class="text-center align-middle">Pre-Procurement Conference, if applicable (Yes/No)</th>
@@ -247,13 +267,11 @@ require_once 'sidebar.php';
                       <th class="text-center align-middle">End of Procurement Activity</th>
                       <th class="text-center align-middle">Expected Delivery/ Implementation Period</th>
                       <th class="text-center align-middle">Source of Funds</th>
-                      <th class="text-center align-middle">Estimated Budget / Authorized Budgetary Allocation (PhP)</th>
+                      <th class="text-center align-middle">Estimated Budget per Item / Authorized Budgetary Allocation
+                        (PhP)</th>
                     </tr>
                   </thead>
                   <tbody>
-
-
-
                     <tr>
                       <td colspan="9" class="text-end fw-bold">TOTAL BUDGET:</td>
                       <td></td>
@@ -261,16 +279,21 @@ require_once 'sidebar.php';
                       <td></td>
                       <td></td>
                     </tr>
-
                   </tbody>
                 </table>
               </div>
             </div>
+
             <div class="card-footer bg-white d-flex justify-content-end p-0">
-              <a type="button" href="ppmp.php" class="btn btn-secondary btn-sm">
+              <a type="button" href="ppmp.php" class="btn btn-secondary btn-sm d-none">
                 <i class="fa fa-arrow-left"></i> Back
               </a>
-              <button type="submit" class="btn btn-primary btn-sm" id="submit_button">
+
+              <button type="submit" class="btn btn-secondary btn-sm me-2" name="is_final" value="No" id="draft_button">
+                <i class="fa fa-pencil"></i> Save as Draft
+              </button>
+
+              <button type="submit" class="btn btn-primary btn-sm" name="is_final" value="Yes" id="submit_button">
                 <i class="fa fa-save"></i> Submit
               </button>
             </div>
@@ -280,13 +303,33 @@ require_once 'sidebar.php';
     </div>
   </div>
 </div>
-<!-- /page content -->
 
 <?php require_once 'footer.php'; ?>
 
 <script>
-
   $(document).ready(function () {
+
+    function formatCurrency(input, final = false) {
+      let value = input.value.replace(/[^0-9.]/g, '');
+      value = value.replace(/(\..*)\./g, '$1');
+      let parts = value.split('.');
+      let integerPart = parts[0];
+      let decimalPart = parts.length > 1 ? '.' + parts[1] : '';
+      integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      input.value = integerPart + decimalPart;
+      if (final) {
+        let cleanValue = input.value.replace(/,/g, '');
+        if (!isNaN(parseFloat(cleanValue)) && cleanValue.length > 0) {
+          input.value = new Intl.NumberFormat('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+          }).format(parseFloat(cleanValue));
+        } else if (cleanValue.length === 0) {
+          input.value = '';
+        }
+      }
+    }
+    window.formatCurrency = formatCurrency;
 
     $('#ppmpTable').on('DOMNodeInserted DOMNodeRemoved', 'tbody tr', function () {
       updateTotalDisplay();
@@ -314,50 +357,52 @@ require_once 'sidebar.php';
         $('#contract_signing_date').val('');
       } else {
         $('#contract_signing_error').text('');
-
       }
 
       return isValid;
     }
+
     $('#procurement_start_date, #bidding_date, #contract_signing_date').on('change', function () {
       $('#bidding_date_error').text('');
       $('#contract_signing_error').text('');
       validateDateSequence();
     });
 
-    function getCurrentTotal() {
+    function getCurrentTotal(excludeRow = null) {
       let total = 0;
-      $("#ppmpTable tbody tr:not(:last)").each(function () {
-        const cellContent = $(this).find("td").eq(9).html();
-        const match = cellContent.match(/Sub-total<\/b>:\s*([\S]+)/);
 
-        if (match && match[1]) {
-          const budgetText = match[1].replace(/[^0-9.]+/g, "");
-          const budget = parseFloat(budgetText || 0);
-          total += isNaN(budget) ? 0 : budget;
-        }
+      $("#ppmpTable tbody tr:not(:last)").each(function () {
+        if (excludeRow && this === excludeRow) return true;
+
+        const quantity = parseInt($(this).attr('data-quantity') || '0', 10) || 0;
+        const unitPrice = parseFloat($(this).attr('data-unit-price') || '0') || 0;
+
+        total += quantity * unitPrice;
       });
+
       return total;
     }
 
     function validateBudgetInput() {
-      const quantity = parseInt($("#quantity").val() || 0);
-      const unitPrice = parseFloat($("#estimated_budget").val() || 0);
-      const totalItemBudget = quantity * unitPrice;
+      const quantity = parseInt($("#quantity").val() || 0, 10);
+      const unitPrice = parseFloat($("#estimated_budget").val().replace(/,/g, '') || 0);
+      const newItemTotal = quantity * unitPrice;
 
-      const remainingBudget = parseFloat($("#remaining_budget").val() || 999999999);
-      const currentTotal = getCurrentTotal();
-      const projectedTotal = currentTotal + totalItemBudget;
+      const allocatedBudget = parseFloat($("#remaining_budget").val() || 0);
 
-      if (projectedTotal > remainingBudget) {
-        if (typeof Swal !== 'undefined') {
-          Swal.fire("Budget Limit Exceeded", `Your total projected PPMP cost (₱${projectedTotal.toLocaleString('en-PH', { minimumFractionDigits: 2 })}) exceeds your remaining budget of ₱${remainingBudget.toLocaleString('en-PH', { minimumFractionDigits: 2 })}.`, "error");
-          $("#estimated_budget").val() = '';
-        } else {
-          Swal.fire("Budget Limit Exceeded", `Budget Limit Exceeded! Projected total: ₱${projectedTotal.toLocaleString()} > Remaining budget: ₱${remainingBudget.toLocaleString()}`, "error");
-        }
+      const totalOtherItems = getCurrentTotal(editingRow);
+
+      const projectedTotal = totalOtherItems + newItemTotal;
+
+      if (projectedTotal > allocatedBudget) {
+        Swal.fire(
+          "Budget Limit Exceeded",
+          `Projected total is ₱${projectedTotal.toLocaleString('en-PH', { minimumFractionDigits: 2 })}, but allocated budget is only ₱${allocatedBudget.toLocaleString('en-PH', { minimumFractionDigits: 2 })}.`,
+          "error"
+        );
         return false;
       }
+
       return true;
     }
 
@@ -374,10 +419,115 @@ require_once 'sidebar.php';
       }
     }
 
+    function formatQuantity(n) {
+      const num = Number(n) || 0;
+      return num.toLocaleString('en-US');
+    }
+
+    function formatPesoAccounting(n) {
+      const num = Number(n) || 0;
+      const abs = Math.abs(num);
+
+      const formatted = abs.toLocaleString('en-PH', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+
+      const withPeso = `₱${formatted}`;
+      return num < 0 ? `(${withPeso})` : withPeso;
+    }
+
+    function resetEditMode() {
+      editingRow = null;
+      editingTempItemId = null;
+
+      $('#SaveForm')[0].reset();
+
+      $('#sub_category_id').empty().append('<option value="" disabled selected>Select Subcategory</option>').prop('disabled', true).trigger('change');
+      $('#item_name_id').empty().append('<option value="" disabled selected>Select Item Name</option>').prop('disabled', true).trigger('change');
+
+      $('#mode_of_procurement').val('').trigger('change');
+      $('#source_of_funds').val('').trigger('change');
+      $('#selected_files_preview').empty();
+
+      $('#addBtn')
+        .removeClass('btn-success')
+        .addClass('btn-primary')
+        .html('<i class="fa fa-plus me-1"></i> Add to PPMP');
+
+      $('#clearBtn')
+        .removeClass('btn-secondary')
+        .addClass('btn-danger')
+        .html('<i class="fa fa-times me-1"></i> Clear');
+    }
+
+    function renderAttachmentPreview(tempId) {
+      const files = tempAttachments[tempId] || [];
+
+      if (files.length === 0) {
+        $('#selected_files_preview').html('<small class="text-muted">No file attached.</small>');
+        return;
+      }
+
+      $('#selected_files_preview').html(
+        files.map((file, index) => `
+      <span class="badge bg-success me-1 mb-1 d-inline-flex align-items-center">
+        <i class="fa fa-file me-1"></i> ${file.name}
+        <button type="button"
+          class="btn btn-sm btn-link text-white p-0 ml-1 remove-temp-file"
+          data-temp-id="${tempId}"
+          data-file-index="${index}"
+          style="font-size: 12px; line-height: 1;">
+          ×
+        </button>
+      </span>
+    `).join('')
+      );
+    }
+
+    $(document).on('click', '.remove-temp-file', function () {
+      const tempId = $(this).data('temp-id');
+      const fileIndex = Number($(this).data('file-index'));
+
+      if (!tempAttachments[tempId]) return;
+
+      tempAttachments[tempId].splice(fileIndex, 1);
+      renderAttachmentPreview(tempId);
+
+      if (editingRow && editingTempItemId == tempId) {
+        editingRow.cells[10].innerHTML = tempAttachments[tempId].length > 0
+          ? `<span class="badge bg-success">${tempAttachments[tempId].length} File(s) Attached</span>`
+          : `<span class="badge bg-warning">None</span>`;
+      }
+    });
+
+    function fileKey(file) {
+      return `${file.name}_${file.size}_${file.lastModified}`;
+    }
+
+    function mergeUniqueFiles(existingFiles, newFiles) {
+      const seen = new Set(existingFiles.map(fileKey));
+      const merged = [...existingFiles];
+
+      newFiles.forEach(file => {
+        const key = fileKey(file);
+
+        if (!seen.has(key)) {
+          seen.add(key);
+          merged.push(file);
+        }
+      });
+
+      return merged;
+    }
+
     let tempAttachments = {};
     let nextItemId = 0;
+    let editingRow = null;
+    let editingTempItemId = null;
 
     document.getElementById("addBtn").addEventListener("click", function () {
+      const isEditing = editingRow !== null;
       const programDescription = document.getElementById("item_description").value.trim();
       const categoryId = document.getElementById("category_id").value;
       const categoryName = $('#category_id option:selected').text();
@@ -387,29 +537,30 @@ require_once 'sidebar.php';
       const item_name_id_to_add = document.getElementById("item_name_id").value;
 
       const specification = document.getElementById("specification").value.trim();
-      const quantity = parseInt(document.getElementById("quantity").value.trim() || 0); // Ensure integer parsing
-      const modeOfProcurement = $('#mode_of_procurement option:selected').text() === 'Select Mode of Procurement' ? '' : $('#mode_of_procurement option:selected').text();
+      const modeOfProcurementId = $('#mode_of_procurement').val();
+      const modeOfProcurement = $('#mode_of_procurement option:selected').text() === 'Select Mode of Procurement'
+        ? ''
+        : $('#mode_of_procurement option:selected').text();
       const preProcurementConference = document.getElementById("pre_procurement_conference").value.trim();
       const procurementStartDate = document.getElementById("procurement_start_date").value.trim();
       const biddingDate = document.getElementById("bidding_date").value.trim();
       const contractSigningDate = document.getElementById("contract_signing_date").value.trim();
       const sourceOfFunds = $('#source_of_funds option:selected').text() === 'Select Source of Funds' ? '' : $('#source_of_funds option:selected').text();
-
-      const unitPrice = parseFloat(document.getElementById("estimated_budget").value || 0);
-      const unitPriceText = unitPrice.toLocaleString('en-PH', { style: 'currency', currency: 'PHP' });
+      const quantity = parseInt(document.getElementById("quantity").value.trim() || 0, 10);
+      const estimatedBudgetInput = document.getElementById("estimated_budget").value;
+      const cleanEstimatedBudget = estimatedBudgetInput.replace(/[^0-9.]/g, '');
+      const unitPrice = parseFloat(cleanEstimatedBudget || 0);
 
       const totalItemBudget = quantity * unitPrice;
-      const totalItemBudgetText = totalItemBudget.toLocaleString('en-PH', { style: 'currency', currency: 'PHP' });
-
       const remarks = document.getElementById("remarks").value.trim();
 
-      const combinedQuantitySpec = `<b>Quantity</b>: ${quantity} unit(s)<br><b>Specs.</b>: ${specification}`;
+      const combinedItemDetails = `${programDescription}`;
+      const categoryDetail = `${categoryName}`;
 
-      const combinedItemDetails = `<b>Project:</b> ${programDescription}<br><b>Sub Category:</b> ${subCategoryName || 'N/A'}<br><b>Item Name:</b> ${itemName || 'N/A'}`;
-
-      const categoryDetail = `<b>Category:</b> ${categoryName}`;
-
-      const combinedBudgetDetails = `<b>Cost price</b>: ${unitPriceText}<br><b>Sub-total</b>: ${totalItemBudgetText}`;
+      const quantityDisplay = formatQuantity(quantity);
+      const unitPriceText = formatPesoAccounting(unitPrice);
+      const combinedQuantitySpec = `${quantityDisplay}<br>${specification}`;
+      const combinedBudgetDetails = `${unitPriceText}`;
 
       if (totalItemBudget <= 0 || quantity <= 0 || !programDescription || !categoryName || !itemName || !specification || !modeOfProcurement || !preProcurementConference || !procurementStartDate || !biddingDate || !contractSigningDate || !sourceOfFunds) {
         if (typeof Swal !== 'undefined') {
@@ -420,8 +571,11 @@ require_once 'sidebar.php';
 
       let isDuplicate = false;
       $("#ppmpTable tbody tr:not(:last)").each(function () {
-        const itemTypeCellContent = $(this).find("td").eq(0).html();
-        if (itemTypeCellContent.includes(`Item Name:</b> ${itemName}`)) {
+        if (isEditing && this === editingRow) return true;
+
+        const existingItemId = $(this).attr('data-item-id');
+
+        if (existingItemId === item_name_id_to_add) {
           isDuplicate = true;
           return false;
         }
@@ -448,53 +602,171 @@ require_once 'sidebar.php';
       const fileInput = document.getElementById("file_attachment");
       const files = Array.from(fileInput.files);
 
-      const currentItemId = nextItemId++;
-      tempAttachments[currentItemId] = files;
+      let currentItemId;
 
-      const tableBody = document.querySelector("#ppmpTable tbody");
-      const newRow = tableBody.insertRow(tableBody.rows.length - 1);
+      if (isEditing) {
+        currentItemId = editingTempItemId;
+
+        if (!tempAttachments[currentItemId]) {
+          tempAttachments[currentItemId] = [];
+        }
+
+        if (files.length > 0) {
+          tempAttachments[currentItemId] = mergeUniqueFiles(
+            tempAttachments[currentItemId],
+            files
+          );
+        }
+      } else {
+        currentItemId = nextItemId++;
+        tempAttachments[currentItemId] = mergeUniqueFiles([], files);
+      }
+
+      let newRow;
+
+      if (isEditing) {
+        newRow = editingRow;
+      } else {
+        const tableBody = document.querySelector("#ppmpTable tbody");
+        newRow = tableBody.insertRow(tableBody.rows.length - 1);
+      }
 
       newRow.setAttribute('data-temp-item-id', currentItemId);
       newRow.setAttribute('data-category-id', categoryId);
       newRow.setAttribute('data-subcategory-id', subCategoryId);
       newRow.setAttribute('data-item-id', item_name_id_to_add);
+      newRow.setAttribute('data-quantity', String(quantity));
+      newRow.setAttribute('data-specification', specification);
+      newRow.setAttribute('data-proc-mode-id', modeOfProcurementId || '');
+      newRow.setAttribute('data-unit-price', String(unitPrice));
 
-      newRow.insertCell(0).innerHTML = combinedItemDetails;
+      if (isEditing) {
+        newRow.cells[0].innerHTML = combinedItemDetails;
+        newRow.cells[1].innerHTML = categoryDetail;
+        newRow.cells[2].innerHTML = combinedQuantitySpec;
+        newRow.cells[3].innerText = modeOfProcurement;
+        newRow.cells[4].innerText = preProcurementConference;
+        newRow.cells[5].innerText = procurementStartDate;
+        newRow.cells[6].innerText = biddingDate;
+        newRow.cells[7].innerText = contractSigningDate;
+        newRow.cells[8].innerText = sourceOfFunds;
+        newRow.cells[9].innerHTML = combinedBudgetDetails;
 
-      newRow.insertCell(1).innerHTML = categoryDetail;
+        const attachmentCount = (tempAttachments[currentItemId] || []).length;
 
-      newRow.insertCell(2).innerHTML = combinedQuantitySpec;
+        newRow.cells[10].innerHTML = attachmentCount > 0
+          ? `<span class="badge bg-success">${attachmentCount} File(s) Attached</span>`
+          : `<span class="badge bg-warning">None</span>`;
 
-      newRow.insertCell(3).innerText = modeOfProcurement;
-
-      newRow.insertCell(4).innerText = preProcurementConference;
-
-      newRow.insertCell(5).innerText = procurementStartDate;
-
-      newRow.insertCell(6).innerText = biddingDate;
-
-      newRow.insertCell(7).innerText = contractSigningDate;
-
-      newRow.insertCell(8).innerText = sourceOfFunds;
-
-      newRow.insertCell(9).innerHTML = combinedBudgetDetails;
-
-      const attachmentCell = newRow.insertCell(10);
-      if (files.length > 0) {
-        attachmentCell.innerHTML = `<span class="badge bg-success">${files.length} File(s) Attached</span>`;
+        newRow.cells[11].innerText = remarks;
       } else {
-        attachmentCell.innerHTML = `<span class="badge bg-warning">None</span>`;
+        newRow.insertCell(0).innerHTML = combinedItemDetails;
+        newRow.insertCell(1).innerHTML = categoryDetail;
+
+        newRow.insertCell(2).innerHTML = combinedQuantitySpec;
+        newRow.cells[2].classList.add("text-end");
+
+        newRow.insertCell(3).innerText = modeOfProcurement;
+        newRow.insertCell(4).innerText = preProcurementConference;
+        newRow.insertCell(5).innerText = procurementStartDate;
+        newRow.insertCell(6).innerText = biddingDate;
+        newRow.insertCell(7).innerText = contractSigningDate;
+        newRow.insertCell(8).innerText = sourceOfFunds;
+
+        newRow.insertCell(9).innerHTML = combinedBudgetDetails;
+        newRow.cells[9].classList.add("text-end");
+
+        const attachmentCell = newRow.insertCell(10);
+        attachmentCell.innerHTML = tempAttachments[currentItemId].length > 0
+          ? `<span class="badge bg-success">${tempAttachments[currentItemId].length} File(s) Attached</span>`
+          : `<span class="badge bg-warning">None</span>`;
+
+        newRow.insertCell(11).innerText = remarks;
       }
 
-      newRow.insertCell(11).innerText = remarks;
+      let actionCell;
 
-      const actionCell = newRow.insertCell(12);
+      if (isEditing) {
+        actionCell = newRow.cells[12];
+        actionCell.innerHTML = "";
+      } else {
+        actionCell = newRow.insertCell(12);
+      }
+
       actionCell.classList.add("text-center");
+
+      const editBtn = document.createElement("button");
+      editBtn.className = "btn btn-sm btn-success me-1";
+      editBtn.innerHTML = '<i class="fa fa-edit"></i>';
+      editBtn.title = "Edit Item";
+      editBtn.type = "button";
+
+      editBtn.addEventListener("click", function () {
+        editingRow = newRow;
+        editingTempItemId = newRow.getAttribute('data-temp-item-id');
+
+        const savedQuantity = newRow.getAttribute('data-quantity') || '1';
+        const savedSpecification = newRow.getAttribute('data-specification') || '';
+
+        $('#item_description').val(newRow.cells[0].innerText.trim());
+        $('#category_id').val(newRow.getAttribute('data-category-id')).trigger('change');
+
+        setTimeout(function () {
+          $('#sub_category_id')
+            .val(newRow.getAttribute('data-subcategory-id'))
+            .trigger('change');
+
+          setTimeout(function () {
+            $('#item_name_id')
+              .val(newRow.getAttribute('data-item-id'))
+              .trigger('change');
+
+            $('#quantity').val(savedQuantity);
+            $('#specification').val(savedSpecification);
+          }, 600);
+        }, 600);
+
+        const savedProcModeId = String(newRow.getAttribute('data-proc-mode-id') || '');
+
+        setTimeout(function () {
+          $('#mode_of_procurement')
+            .val(savedProcModeId)
+            .trigger('change.select2')
+            .trigger('change');
+        }, 100);
+        $('#pre_procurement_conference').val(newRow.cells[4].innerText.trim());
+        $('#procurement_start_date').val(newRow.cells[5].innerText.trim());
+        $('#bidding_date').val(newRow.cells[6].innerText.trim());
+        $('#contract_signing_date').val(newRow.cells[7].innerText.trim());
+        $('#source_of_funds').val(newRow.cells[8].innerText.trim()).trigger('change');
+
+        const tempId = newRow.getAttribute('data-temp-item-id');
+        const files = tempAttachments[tempId] || [];
+
+        renderAttachmentPreview(tempId);
+
+        $('#estimated_budget').val(newRow.getAttribute('data-unit-price'));
+        formatCurrency(document.getElementById('estimated_budget'), true);
+
+        $('#remarks').val(newRow.cells[11].innerText.trim());
+
+        $('#addBtn')
+          .removeClass('btn-primary')
+          .addClass('btn-success')
+          .html('<i class="fa fa-save me-1"></i> Update Item');
+
+        $('#clearBtn')
+          .removeClass('btn-danger')
+          .addClass('btn-secondary')
+          .html('<i class="fa fa-times me-1"></i> Cancel Edit');
+      });
+
       const removeBtn = document.createElement("button");
       removeBtn.className = "btn btn-sm btn-danger";
       removeBtn.innerHTML = '<i class="fa fa-trash"></i>';
       removeBtn.title = "Remove Item";
       removeBtn.type = "button";
+
       removeBtn.addEventListener("click", function () {
         Swal.fire({
           title: "Are you sure?",
@@ -507,33 +779,33 @@ require_once 'sidebar.php';
           cancelButtonColor: "#555555"
         }).then((result) => {
           if (result.isConfirmed) {
-            delete tempAttachments[currentItemId];
+            const tempId = newRow.getAttribute('data-temp-item-id');
+            delete tempAttachments[tempId];
             newRow.remove();
             updateTotalDisplay();
-            // Swal.fire("Removed!", "The item has been removed.", "success");
+
+            if (editingRow === newRow) {
+              resetEditMode();
+            }
           }
         });
       });
+
+      actionCell.appendChild(editBtn);
       actionCell.appendChild(removeBtn);
 
-      $('#SaveForm')[0].reset();
+      $('#file_attachment').val('');
+      resetEditMode();
       updateTotalDisplay();
 
       $('#sub_category_id').empty().append('<option value="" disabled selected>Select Subcategory</option>').prop('disabled', true).trigger('change');
       $('#item_name_id').empty().append('<option value="" disabled selected>Select Item Name</option>').prop('disabled', true).trigger('change');
-      $('#mode_of_procurement').append('<option value="" disabled selected>Select Mode of Procurement</option>').trigger('change');
-      $('#source_of_funds').append('<option value="" disabled selected>Select Source of Funds</option>').trigger('change');
-
-      // Swal.fire("Item Added", "The procurement item has been added to the list.", "success");
+      $('#mode_of_procurement').val('').trigger('change');
+      $('#source_of_funds').val('').trigger('change');
     });
 
     $('#clearBtn').on('click', function () {
-      const form = $('#SaveForm')[0];
-      form.reset();
-      $('#sub_category_id').empty().append('<option value="" disabled selected>Select Subcategory</option>').prop('disabled', true).trigger('change');
-      $('#item_name_id').empty().append('<option value="" disabled selected>Select Item Name</option>').prop('disabled', true).trigger('change');
-      $('#mode_of_procurement').append('<option value="" disabled selected>Select Mode of Procurement</option>').trigger('change');
-      $('#source_of_funds').append('<option value="" disabled selected>Select Source of Funds</option>').trigger('change');
+      resetEditMode();
     });
 
     $('#sub_category_id').select2({ width: '100%', placeholder: 'Select Subcategory' });
@@ -543,7 +815,6 @@ require_once 'sidebar.php';
 
     $('#category_id').change(function () {
       const categoryId = $(this).val();
-
       if (!categoryId) return;
 
       $.ajax({
@@ -566,7 +837,7 @@ require_once 'sidebar.php';
             $subCatSelect.prop('disabled', true);
           }
         },
-        error: function (xhr, status, error) {
+        error: function (xhr) {
           console.error('Error fetching subcategories:', xhr.responseText);
         }
       });
@@ -597,7 +868,6 @@ require_once 'sidebar.php';
         data: { action: 'GetItemNamesBySubCategory', sub_category_id: subCategoryId },
         dataType: 'json',
         success: function (response) {
-
           $itemSelect.empty();
 
           if (response.success && response.data.length > 0) {
@@ -611,16 +881,16 @@ require_once 'sidebar.php';
             $itemSelect.prop('disabled', true);
           }
 
-          $itemSelect.select2({
-            width: '100%',
-          });
+          $itemSelect.select2({ width: '100%' });
 
-          // $('#item_description').val('');
-          $('#specification').val('');
-          $('#quantity').val('1');
+          if (!editingRow) {
+            $('#specification').val('');
+            $('#quantity').val('1');
+          }
+
           $('#unit_cost').val('');
         },
-        error: function (xhr, status, error) {
+        error: function (xhr) {
           console.error('Error fetching item names:', xhr.responseText);
           Swal.fire("Error", "Could not load item names. Check console for details.", "error");
 
@@ -632,12 +902,68 @@ require_once 'sidebar.php';
       });
     });
 
-    $('#SaveForm').submit(function (e) {
+    let submissionAction = '';
+    $('#draft_button').on('click', function () {
+      submissionAction = 'Draft';
+    });
+    $('#submit_button').on('click', function () {
+      submissionAction = 'Final';
+    });
+
+    $('#SaveForm').submit(async function (e) {
       e.preventDefault();
 
-      const items = [];
-      let allFiles = [];
+      if (submissionAction === 'Final') {
+        const remainingBudget = parseFloat($('#remaining_budget').val() || 0);
 
+        let ppmpTotal = 0;
+        $('#ppmpTable tbody tr:not(:last)').each(function () {
+          const row = $(this);
+          const quantity = parseInt((row.attr('data-quantity') || '0').replace(/,/g, ''), 10) || 0;
+          const unitPrice = parseFloat((row.attr('data-unit-price') || '0').replace(/,/g, '')) || 0;
+          ppmpTotal += (quantity * unitPrice);
+        });
+
+        const remainingAfterPPMP = remainingBudget - ppmpTotal;
+
+        if (remainingAfterPPMP >= 500) {
+          Swal.fire(
+            "Budget Underutilized",
+            `Your PPMP would leave ₱${remainingAfterPPMP.toLocaleString()} unspent. 
+                You must utilize your full budget (only ₱500 or less may remain).`,
+            "warning"
+          );
+          return;
+        }
+
+        const firstPrompt = await Swal.fire({
+          title: "Are you sure?",
+          text: "Are you sure you want to submit this PPMP? Changes will no longer be allowed once finalized.",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Yes, continue",
+          cancelButtonText: "Cancel"
+        });
+
+        if (!firstPrompt.isConfirmed) {
+          return;
+        }
+
+        const secondPrompt = await Swal.fire({
+          title: "Final Confirmation",
+          text: "This action is final and cannot be undone. Proceed with submission?",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Submit",
+          cancelButtonText: "Cancel"
+        });
+
+        if (!secondPrompt.isConfirmed) {
+          return;
+        }
+      }
+
+      const items = [];
       const $itemRows = $('#ppmpTable tbody tr:not(:last)');
 
       if ($itemRows.length === 0) {
@@ -653,27 +979,23 @@ require_once 'sidebar.php';
         const categoryId = row.attr('data-category-id');
         const subCategoryId = row.attr('data-subcategory-id');
 
-        const itemDetailsHTML = row.find('td:eq(0)').html();
+        const programDescription = row.find('td:eq(0)').text().trim();
+        const categoryName = row.find('td:eq(1)').text().trim();
 
-        const programDescription = (itemDetailsHTML.match(/<b>Project:<\/b>([^<]+)/) || [])[1].trim();
-        const subCategoryName = (itemDetailsHTML.match(/<b>Sub Category:<\/b>([^<]+)/) || [])[1].trim();
-        const itemName = (itemDetailsHTML.match(/<b>Item Name:<\/b>([^<]+)/) || [])[1].trim();
-
-        const categoryDetailHTML = row.find('td:eq(1)').html();
-        const categoryName = (categoryDetailHTML.match(/<b>Category:<\/b>([^<]+)/) || [])[1].trim();
+        const quantity = parseInt((row.attr('data-quantity') || '0').replace(/,/g, ''), 10) || 0;
+        const unitPrice = parseFloat((row.attr('data-unit-price') || '0').replace(/,/g, '')) || 0;
 
         const quantitySpecHTML = row.find('td:eq(2)').html();
-        const quantityText = (quantitySpecHTML.match(/<b>Quantity<\/b>:\s*(\d+)/) || [])[1];
-        const quantity = parseInt(quantityText || 0);
-        const specification = (quantitySpecHTML.match(/<b>Specs\.<\/b>:\s*(.*)/) || [])[1]; // Correct index is 2
+        const parts = (quantitySpecHTML || '').split('<br>');
+        const specification = (parts.length > 1 ? parts.slice(1).join('<br>').trim() : '');
 
-        const budgetDetailsHTML = row.find('td:eq(9)').html();
-        const unitCostText = (budgetDetailsHTML.match(/<b>Cost price<\/b>:\s*([\S]+)/) || [])[1];
-        const totalCostText = (budgetDetailsHTML.match(/<b>Sub-total<\/b>:\s*([\S]+)/) || [])[1];
+        const estimated_budget = unitPrice;
+        const total_cost = estimated_budget * quantity;
 
-        const cleanCurrency = (text) => parseFloat(text.replace(/[^0-9.]+/g, "") || 0);
+        const itemName = row.attr('data-item-id');
 
         const itemObject = {
+          temp_item_id: tempItemId,
           category_id: categoryId,
           sub_category_id: subCategoryId,
           item_name_id: row.attr('data-item-id'),
@@ -682,6 +1004,7 @@ require_once 'sidebar.php';
           specifications: specification,
           quantity: quantity,
 
+          mode_of_procurement_id: row.attr('data-proc-mode-id'),
           mode_of_procurement: row.find('td:eq(3)').text().trim(),
           pre_procurement_conference: row.find('td:eq(4)').text().trim(),
           procurement_start_date: row.find('td:eq(5)').text().trim(),
@@ -689,18 +1012,18 @@ require_once 'sidebar.php';
           contract_signing_date: row.find('td:eq(7)').text().trim(),
           source_of_funds: row.find('td:eq(8)').text().trim(),
 
-          estimated_budget: cleanCurrency(unitCostText),
-          total_cost: cleanCurrency(totalCostText),
+          estimated_budget: estimated_budget,
+          total_cost: total_cost,
           remarks: row.find('td:eq(11)').text().trim(),
 
           category_name: categoryName,
-          sub_category_name: subCategoryName,
-          item_name: itemName,
+          sub_category_name: subCategoryId,
+          item_name: itemName
         };
+
         items.push(itemObject);
 
         const filesToUpload = tempAttachments[tempItemId] || [];
-
         filesToUpload.forEach(function (file, index) {
           fileFormData.append(`file_${tempItemId}_${index}`, file);
         });
@@ -712,7 +1035,7 @@ require_once 'sidebar.php';
         $('#item_name_id').val() ||
         $('#item_description').val().trim() ||
         $('#specification').val().trim() ||
-        (parseInt($('#quantity').val() || 1) !== 1) ||
+        (parseInt($('#quantity').val() || 1, 10) !== 1) ||
         $('#estimated_budget').val().trim() ||
         $('#mode_of_procurement').val() ||
         $('#pre_procurement_conference').val() ||
@@ -733,6 +1056,11 @@ require_once 'sidebar.php';
       formData.append('remaining_budget', $('#remaining_budget').val());
       formData.append('action', 'AddPPMPForm');
 
+      const isFinalValue = (submissionAction === 'Final') ? 1 : 0;
+      formData.append('is_final', isFinalValue);
+
+      submissionAction = '';
+
       formData.append('ppmp_items', JSON.stringify(items));
       for (let pair of fileFormData.entries()) {
         formData.append(pair[0], pair[1]);
@@ -746,11 +1074,16 @@ require_once 'sidebar.php';
         processData: false,
 
         beforeSend: function () {
-          $('#submit_button').prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Submitting...');
+          const buttonId = (isFinalValue === 1) ? '#submit_button' : '#draft_button';
+          const buttonText = (isFinalValue === 1) ? 'Submitting...' : 'Saving...';
+
+          $('#submit_button, #draft_button').prop('disabled', true);
+          $(buttonId).html('<i class="fa fa-spinner fa-spin"></i> ' + buttonText);
         },
 
         success: function (response) {
           $('#submit_button').prop('disabled', false).html('<i class="fa fa-save"></i> Submit');
+          $('#draft_button').prop('disabled', false).html('<i class="fa fa-pencil"></i> Save as Draft');
 
           if (response.success) {
             showSweetAlert("Success!", response.message, "success", "ppmp.php");
@@ -760,6 +1093,7 @@ require_once 'sidebar.php';
         },
         error: function (xhr) {
           $('#submit_button').prop('disabled', false).html('<i class="fa fa-save"></i> Submit');
+          $('#draft_button').prop('disabled', false).html('<i class="fa fa-pencil"></i> Save as Draft');
           console.error(xhr.responseText);
           showSweetAlert("Error", "Something went wrong during submission. Check console for details.", "error");
         }
@@ -767,5 +1101,4 @@ require_once 'sidebar.php';
     });
 
   });
-
 </script>
