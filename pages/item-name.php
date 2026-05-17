@@ -111,10 +111,12 @@ require_once 'sidebar.php';
         </div>
 
         <div class="card-box bg-white table-responsive pb-2">
-          <button data-toggle="modal" data-target="#AddNew" class="btn btn-sm btn-primary mb-3 ml-3 mt-1"
-            title="Create sub-category"><i class="fa fa-plus"></i></button>
-          <button id="delete-selected" class="btn btn-sm btn-danger mb-3 mt-1" title="Delete sub-category"><i
+          <div class="d-flex justify-content-end mr-2">
+            <button data-toggle="modal" data-target="#AddNew" class="btn btn-sm btn-primary mb-3 ml-3 mt-1"
+              title="Create sub-category"><i class="fa fa-plus"></i></button>
+            <button id="delete-selected" class="btn btn-sm btn-danger mb-3 mt-1" title="Delete sub-category"><i
               class="fa fa-trash"></i></button>
+          </div>
           <table id="datatable" class="table table-striped table-bordered table-hover" style="width:100%">
             <thead>
               <tr>
@@ -140,7 +142,7 @@ require_once 'sidebar.php';
                   <td class="d-none"><?= date('Y-m-d', strtotime($row['created_at'])); ?></td>
                   <td class="text-center">
                     <button class="btn btn-success btn-sm edit-item" title="Edit Item Name"
-                      data-item-id="<?= $row['item_name_id']; ?>" data-sub-category-id="<?= $row['sub_category_id']; ?>"
+                      data-item-name-id="<?= $row['item_name_id']; ?>" data-sub-category-id="<?= $row['sub_category_id']; ?>"
                       data-sub-cat-id="<?= htmlspecialchars($row['sub_category_id']); ?>"
                       data-item-name="<?= htmlspecialchars($row['item_name']); ?>">
                       <i class="fa fa-edit"></i>
