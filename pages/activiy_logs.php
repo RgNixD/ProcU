@@ -1,10 +1,10 @@
 <?php
-  require_once '../php/auth_check.php';
-  if (!($canApprovePPMP && $canViewReports && $canManageBudget)) {
-    header("Location: 404.php");
-    exit();
-  }
-  require_once 'sidebar.php';
+require_once '../php/auth_check.php';
+if (!($canApprovePPMP && $canViewReports && $canManageBudget)) {
+  header("Location: 404.php");
+  exit();
+}
+require_once 'sidebar.php';
 ?>
 
 <div class="right_col" role="main">
@@ -29,7 +29,7 @@
             <thead>
               <tr>
                 <th>USER</th>
-                <th>USER TYPE</th>
+                <th>ACCESS ROLE</th>
                 <th>ACTION</th>
                 <th>TABLE AFFECTED</th>
                 <th class="d-none">RECORD ID</th>
@@ -40,10 +40,26 @@
               <?php
               $activity_logs = $db->getActivityLogs();
               while ($row = $activity_logs->fetch_assoc()) {
+                $accessType = htmlspecialchars($row['access_type']);
+                $badgeClass = 'bg-secondary';
+
+                switch ($row['access_type']) {
+                  case 'BAC Sec Head':
+                    $badgeClass = 'bg-primary';
+                    break;
+                  case 'Budget Officer':
+                    $badgeClass = 'bg-success';
+                    break;
+                  case 'Sectors':
+                    $badgeClass = 'bg-info';
+                    break;
+                }
                 ?>
                 <tr>
                   <td><?= htmlspecialchars($row['user_name'] ?: 'System/Unknown User'); ?></td>
-                  <td><?= htmlspecialchars($row['access_type']); ?></td>
+                  <td>
+                    <span class="text-light badge <?= $badgeClass; ?>"><?= $accessType; ?></span>
+                  </td>
                   <td><?= htmlspecialchars($row['action']); ?></td>
                   <td><?= htmlspecialchars($row['table_name']); ?></td>
                   <td class="d-none"><?= htmlspecialchars($row['record_id'] ?: 'N/A'); ?></td>
@@ -52,7 +68,6 @@
               <?php } ?>
             </tbody>
           </table>
-
         </div>
       </div>
     </div>
