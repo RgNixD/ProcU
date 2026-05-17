@@ -122,9 +122,11 @@
         </div>
 
         <div class="card-box bg-white table-responsive pb-2">
-          <button data-toggle="modal" data-target="#AddNew" class="btn btn-sm btn-primary mb-3 ml-3 mt-1" title="Create sub-category"><i
-              class="fa fa-plus"></i></button>
-          <button id="delete-selected" class="btn btn-sm btn-danger mb-3 mt-1" title="Delete sub-category"><i class="fa fa-trash"></i></button>
+          <div class="d-flex justify-content-end mr-2">
+            <button data-toggle="modal" data-target="#AddNew" class="btn btn-sm btn-primary mb-3 ml-3 mt-1" title="Create sub-category"><i
+                class="fa fa-plus"></i></button>
+            <button id="delete-selected" class="btn btn-sm btn-danger mb-3 mt-1" title="Delete sub-category"><i class="fa fa-trash"></i></button>
+          </div>
           <table id="datatable" class="table table-striped table-bordered table-hover" style="width:100%">
             <thead>
               <tr>
