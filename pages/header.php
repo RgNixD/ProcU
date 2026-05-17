@@ -48,6 +48,9 @@
     <!-- <link href="../build/css/custom.min.css" rel="stylesheet"> -->
 
     <style>
+      body {
+        background-color: white;
+      }
       .left_col {
         height:100vh; 
         overflow-y:auto;
@@ -116,31 +119,6 @@
           margin-bottom: 0.5rem;
         }
       }
-      /* End Profile page */
-      button, .btn {
-        background-color: #a83232;
-        border: 1px solid #a83232;  
-        color: #fff; 
-        transition: all 0.3s ease;
-      }
-
-      button:hover, .btn:hover {
-        background-color: #fff;       
-        border: 1px solid #a83232;  
-        color: #a83232;             
-      }
-
-      button:active,
-      .btn:focus,
-      .btn:active {
-        outline: none !important; 
-        background-color: #a83232 !important; 
-        border-color: #a83232 !important; 
-        color: #fff !important;              
-        box-shadow: none !important; 
-        border: 1px solid #a83232;       
-      }
-
     </style>
   </head>
 
